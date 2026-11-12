@@ -96,7 +96,7 @@ const API='https://dojazdy-pg-api.sebamolin.workers.dev';
 const stationNames={'8607':'Starogard Gdański','7112':'Tczew','7534':'Gdańsk Wrzeszcz'};
 const hhmm=v=>{
  if(!v||typeof v!=='string')return null;
- const match=v.match(/(?:T|^)(\\d{2}:\\d{2})/);
+ const match=v.match(/(?:T|^)(\d{2}:\d{2})/);
  return match?match[1]:null;
 };
 function buildLiveBoard(payload,id){
