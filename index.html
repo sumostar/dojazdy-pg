@@ -186,9 +186,9 @@ function renderTimeline(list){
 }
 $('timelineToggle').onclick=()=>{const hidden=$('timeline').hidden;$('timeline').hidden=!hidden;$('timelineToggle').textContent=hidden?'Ukryj':'Pokaż';$('timelineToggle').setAttribute('aria-pressed',String(hidden))};
 function card(r){
- const a=r.t,g=gaps(r),risk=(g.rail!==null&&g.rail<+$('rail').value)||(g.bus!==null&&g.bus<+$('bus').value),end=r.d==='M'?a[7]:a[6];
+ const a=r.t,g=gaps(r),risk=(g.rail!==null&&g.rail<appliedFilters.rail)||(g.bus!==null&&g.bus<appliedFilters.bus),end=r.d==='M'?a[7]:a[6];
  const maxMzkBuffer=r.d==='M'&&a[1]&&a[3] ? min(a[3])-min(a[1])-14 : null;
- const mzkRisk=maxMzkBuffer!==null&&maxMzkBuffer<+$('bus').value;
+ const mzkRisk=maxMzkBuffer!==null&&maxMzkBuffer<appliedFilters.bus;
  const direct=(r.d==='M'&&!a[4]&&!a[5]&&a[6])||(r.d==='R'&&!a[2]&&!a[3]&&a[4]);
  const tag=!end?'Niepełna trasa':(risk||mzkRisk)?'Sprawdź krótki margines':direct?'Bez przesiadki kolejowej':'Zgodne z progami';
  const steps=stages(r).map(s=>{const depart=s.type==='train'||s.type==='bus';return '<div class="step '+(depart?'depart':'')+'"><div class="hour">'+(depart?'<strong>'+esc(s.t)+'</strong><small>ODJAZD</small>':esc(s.t))+'</div><div><div class="place">'+(s.type==='train'?'🚆 ':s.type==='bus'?'🚌 ':'')+esc(s.label)+'</div>'+(depart?'<div class="detail">'+(s.type==='train'?'REG '+esc(s.num||'numer do sprawdzenia'):'Autobus 12')+'</div>':'')+(s.type==='train'?'<div class="platform '+(!s.plat?'unknown':'')+'">'+(s.plat?'Peron / tor: '+esc(s.plat):'Sprawdź peron i tor')+'</div>':'')+'</div></div>'}).join('');
