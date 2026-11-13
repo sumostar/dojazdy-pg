@@ -44,10 +44,46 @@
     const track=obj[arriving?'arrivalTrack':'departureTrack'];
     return [p,track].filter(x=>x!==null&&x!==undefined&&String(x).trim()).join('/');
   }
+  // The monthly-ticket view is restricted to POLREGIO (formerly Przewozy
+  // Regionalne). Never infer operator solely from a train number.
+  // Some PLK schedule versions omit the operator but retain the commercial
+  // REG category; in that case include only REG-class services, not IC/SKM.
+  function namedValues(obj,keys){
+    if(!obj||typeof obj!=='object')return [];
+    const found=[];
+    for(const key of keys){
+      const raw=obj[key];
+      if(raw===undefined||raw===null)continue;
+      if(typeof raw==='object'){
+        for(const sub of ['code','symbol','name','shortName','id']){
+          if(typeof raw[sub]==='string')found.push(raw[sub]);
+        }
+      }else if(typeof raw==='string')found.push(raw);
+    }
+    return found.map(v=>String(v).trim().toUpperCase()).filter(Boolean);
+  }
+  function isPolregioRoute(route){
+    const carrierFields=['carrierCode','carrierName','carrierSymbol','carrierShortName','carrier',
+      'operatorCode','operatorName','operator','railwayUndertaking','railwayUndertakingCode',
+      'railwayUndertakingName','trainOperator','commercialCarrier','commercialCarrierCode'];
+    const carriers=namedValues(route,carrierFields);
+    // A recognized operator identity is more reliable than the service category.
+    if(carriers.length){
+      return carriers.some(v=>/^(PR|POLREGIO|PRZEWOZY REGIONALNE)$/.test(v)||
+        v.includes('POLREGIO')||v.includes('PRZEWOZY REGIONALNE'));
+    }
+    const catFields=['commercialCategorySymbol','commercialCategory','category','categorySymbol',
+      'trainCategory','trainCategorySymbol','departureCommercialCategory','arrivalCommercialCategory'];
+    const categories=[...namedValues(route,catFields)];
+    for(const s of Array.isArray(route.stations)?route.stations:[]){
+      categories.push(...namedValues(s,catFields));
+    }
+    return categories.some(v=>/^(REG|R|RP|PR)$/.test(v));
+  }
   function extractTrains(payload,date){
     const trains=[];
     for(const route of Array.isArray(payload?.routes)?payload.routes:[]){
-      if(!operatingOn(route,date))continue;
+      if(!operatingOn(route,date)||!isPolregioRoute(route))continue;
       const stations=Array.isArray(route.stations)?route.stations:[];
       // Do not re-sort: the station list is ordered along the service's route.
       const stops=stations.map((s,i)=>{
@@ -231,7 +267,7 @@
       else{window.autoRoutes=null;status('Brak rozkładu online ('+err.message+'). Pokazuję zapisane warianty offline.','error');render()}
     }finally{if(button)button.disabled=false}
   }
-  window.PGAuto={generate,load,extractTrains,legs,busTimes};
+  window.PGAuto={generate,load,extractTrains,legs,busTimes,isPolregioRoute};
   document.getElementById('autoRefresh')?.addEventListener('click',()=>load(true));
   document.getElementById('travelDate')?.addEventListener('change',()=>{window.autoRoutes=null;render();load()});
   load();
