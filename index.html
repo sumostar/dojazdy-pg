@@ -215,10 +215,12 @@ function recommendedRows(candidates,f,backups){
  const end=r=>min(r.d==='M'?r.t[7]:r.t[6])??9999;
  for(const options of groups.values()){
   options.sort((x,y)=>{
-   if(railSafe(x)!==railSafe(y))return railSafe(x)?-1:1;
+   // First usable railway connection wins; a later train is optional Plan B.
+   const primaryOrder=x.d==='M'?end(x)-end(y):min(y.t[0])-min(x.t[0]);
+   if(primaryOrder)return primaryOrder;
    if(busSafe(x)!==busSafe(y))return busSafe(x)?-1:1;
-   if(x.d==='M')return end(x)-end(y)||min(y.t[0])-min(x.t[0]);
-   return min(y.t[0])-min(x.t[0])||end(x)-end(y);
+   if(railSafe(x)!==railSafe(y))return railSafe(x)?-1:1;
+   return min(y.t[0])-min(x.t[0]);
   });
   const first=options[0];
   chosen.push({...first,backup:false});
