@@ -223,8 +223,11 @@
       if(!old||r.t[0]>old.t[0])unique.set(key,r);
     }
     const data=[...unique.values()].sort((a,b)=>a.d.localeCompare(b.d)||a.t[0].localeCompare(b.t[0]));
-    return {routes:data,summary:{scheduleTrains:trains.length,starogardOutbound:st.length+sw.length,
-      starogardInbound:ts.length+ws.length,morning:going.length,returns:back.length,directMorning:sw.length,directReturn:ws.length}};
+    const morningServices=new Set(data.filter(r=>r.d==='M').map(r=>r.anchors[0])).size;
+    const returnServices=new Set(data.filter(r=>r.d==='R').map(r=>r.anchors[1]||r.anchors[0])).size;
+    return {routes:data,summary:{scheduleTrains:trains.length,starogardOutbound:morningServices,
+      starogardInbound:returnServices,morning:morningServices,returns:returnServices,
+      directMorning:sw.length,directReturn:ws.length}};
   }
   function status(message,state=''){
     const el=document.getElementById('autoStatus');
@@ -240,7 +243,7 @@
         const cached=JSON.parse(localStorage.getItem(cacheKey)||'null');
         if(cached?.payload){
           window.autoRoutes=generate(cached.payload,date).routes;
-          status('Rozkład zapisany · '+date+' · '+window.autoRoutes.length+' kompletnych wariantów','cached');
+          status('Zapisany rozkład POLREGIO / REG · '+date+' (dane offline)','cached');
           render();
         }
       }catch(e){}
@@ -258,8 +261,9 @@
       const result=generate(payload,date);
       window.autoRoutes=result.routes;
       try{localStorage.setItem(cacheKey,JSON.stringify({payload,created:new Date().toISOString()}));}catch(e){}
-      status('PKP PLK '+date+' · '+result.routes.length+' kompletnych podróży ('+
-        result.summary.morning+' na PG, '+result.summary.returns+' do domu).','success');
+      status('PKP PLK · POLREGIO / REG · '+date+': '+result.summary.morning+
+        ' kursów do Gdańska, '+result.summary.returns+
+        ' kursów do Starogardu. Wybieramy tylko pierwszy wariant na każdy kurs.','success');
       render();
     }catch(err){
       if(seq!==requestSerial)return;
