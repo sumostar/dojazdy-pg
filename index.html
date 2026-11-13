@@ -217,7 +217,7 @@ function render(){
  $('count').textContent=(Array.isArray(window.autoRoutes)?'Rozkład automatyczny PKP PLK':'Zapisane warianty offline')+' · '+list.length+' z '+full.length+' kompletnych wariantów';
  $('filterHint').classList.remove('filterPending');
  $('filterHint').textContent=all?'Pokazuję wszystkie kompletne warianty, bez ograniczeń godzin i marginesów.':
-   'Aktywne: wyjście od '+$('from').value+' · dotarcie do '+$('to').value+
+   'Aktywne: wyjście od '+chartTime(f.earliest)+' · dotarcie do '+chartTime(f.latest)+
    (f.risky?' · krótkie przesiadki widoczne':' · minimum '+f.rail+' min Tczew, '+f.bus+' min PKP–MZK');
  const detail=all?'':[
    reason.early?'Przed wybraną godziną: '+reason.early:null,
