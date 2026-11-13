@@ -109,7 +109,7 @@
     if(!candidates.length)return null;
     const bus=candidates[candidates.length-1],stgArrival=bus.dep+14;
     const wrz=second?second.arr:first.arr;
-    if(wrz>=12*60||first.dep<4*60)return null;
+    if(home<4*60||home>12*60||wrz>15*60)return null;
     const home=bus.dep-5,pg=wrz+25;
     const direct=!second;
     const t=[clock(home),clock(bus.dep),clock(stgArrival),clock(first.dep),
@@ -141,8 +141,7 @@
     const ts=uniqueLegs(legs(trains,ST.tcz,ST.stg,date));
     const going=[],back=[];
     const outboundBus=busTimes('to',date),returnBus=busTimes('back',date);
-    const limitRail=Number(document.getElementById('rail')?.value||8);
-    const includeShort=!!document.getElementById('risky')?.checked;
+    // Generate all physically feasible transfers; time and risk settings are presentation filters.
     for(const direct of sw){
       const r=morningCandidate(direct,null,outboundBus);
       if(r)going.push(r);
@@ -150,9 +149,14 @@
     for(const leg of st){
       // Same physical service continuing to Wrzeszcz is already a direct journey.
       if(sw.some(d=>d.trainId===leg.trainId&&d.dep===leg.dep))continue;
-      const possible=tw.filter(next=>next.dep>=leg.arr+(includeShort?2:limitRail)&&next.dep-leg.arr<=120);
-      const preferred=possible.sort((a,b)=>a.arr-b.arr)[0];
-      if(preferred){const r=morningCandidate(leg,preferred,outboundBus);if(r)going.push(r)}
+      const possible=tw.filter(next=>next.dep>=leg.arr+2&&next.dep-leg.arr<=120);
+      // Keep all reasonable alternatives, including 5-minute transfers; do not lose
+      // other options when the user changes a threshold on the screen.
+      possible.sort((a,b)=>a.arr-b.arr);
+      for(const connection of possible.slice(0,5)){
+        const r=morningCandidate(leg,connection,outboundBus);
+        if(r)going.push(r);
+      }
     }
     for(const direct of ws){
       const r=returnCandidate(direct,null,returnBus);
@@ -160,15 +164,17 @@
     }
     for(const leg of ts){
       if(ws.some(d=>d.trainId===leg.trainId&&d.arr===leg.arr))continue;
-      const possible=wt.filter(prev=>prev.arr<=leg.dep-(includeShort?2:limitRail)&&leg.dep-prev.arr<=120);
+      const possible=wt.filter(prev=>prev.arr<=leg.dep-2&&leg.dep-prev.arr<=120);
       // Latest possible departure from the university, after respecting transfer buffer.
       possible.sort((a,b)=>b.dep-a.dep);
-      const preferred=possible[0];
-      if(preferred){const r=returnCandidate(preferred,leg,returnBus);if(r)back.push(r)}
+      for(const connection of possible.slice(0,5)){
+        const r=returnCandidate(connection,leg,returnBus);
+        if(r)back.push(r);
+      }
     }
     const unique=new Map();
     for(const r of [...going,...back]){
-      const key=r.d+'|'+r.t[3]+'|'+r.t[1]+'|'+(r.d==='M'?r.t[6]:r.t[4]);
+      const key=r.d+'|'+r.t[1]+'|'+r.t[3]+'|'+(r.d==='M'?r.t[6]:r.t[4]);
       const old=unique.get(key);
       if(!old||r.t[0]>old.t[0])unique.set(key,r);
     }
@@ -220,7 +226,5 @@
   window.PGAuto={generate,load,extractTrains,legs,busTimes};
   document.getElementById('autoRefresh')?.addEventListener('click',()=>load(true));
   document.getElementById('travelDate')?.addEventListener('change',()=>{window.autoRoutes=null;render();load()});
-  document.getElementById('rail')?.addEventListener('change',()=>{if(window.autoRoutes)load()});
-  document.getElementById('risky')?.addEventListener('change',()=>{if(window.autoRoutes)load()});
   load();
 })();
