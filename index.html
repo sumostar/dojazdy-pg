@@ -19,6 +19,9 @@
 /* Clearly separate outbound and inbound Starogard station services */
 #trainInventory{padding:16px}
 #trainInventory .headline{margin-bottom:15px}
+#trainInventory .trainInventoryToggle{display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;color:#17324d;font-size:15px;font-weight:800;list-style-position:inside}
+#trainInventory .trainInventoryToggle .muted{font-size:11px;font-weight:600;white-space:nowrap}
+#trainInventory details>p.muted{margin:10px 0}
 .anchorSection{border:1px solid #d8e3ef;border-radius:13px;padding:13px;margin:12px 0;background:#fbfcfe}
 .anchorSectionHead{display:flex;align-items:center;justify-content:space-between;gap:9px;margin-bottom:12px}
 .anchorSectionHead b{display:block;font-size:14px;letter-spacing:.35px}
@@ -89,7 +92,7 @@
 <button class="primary" id="liveCheck">Sprawdź pociągi PKP</button></div>
 <div class="controls"><label><input id="liveRegional" type="checkbox" checked> Tylko POLREGIO / REG (bilet miesięczny)</label></div>
 <div id="liveResult" aria-live="polite"><div class="muted">Kliknij, aby pobrać pełną tablicę rozkładową oraz dostępne opóźnienia. Karty podróży działają także offline.</div></div>
-</section><div id="count" class="summary"></div><section class="panel" id="trainInventory" hidden><div class="headline"><div><b>Pociągi regionalne · Starogard Gdański</b><div class="muted">Oba kierunki, osobno. Godziny z rozkładu PKP PLK; zaznaczono kompletne dojazdy z MZK 12.</div></div></div><div id="trainInventoryList"></div></section>
+</section><div id="count" class="summary"></div><section class="panel" id="trainInventory" hidden><details id="trainInventoryDetails"><summary class="trainInventoryToggle">Pociągi regionalne · Starogard Gdański <span id="trainInventoryCount" class="muted"></span></summary><p class="muted">Osobna lista odjazdów i przyjazdów. Nie jest potrzebna do korzystania z planera — rozwiń tylko, gdy chcesz sprawdzić wszystkie pociągi.</p><div id="trainInventoryList"></div></details></section>
 <section class="panel" id="timelinePanel"><div class="headline"><div><b id="timelineTitle">Podróże ze Starogardu → Gdańsk PG</b><div class="muted">Harmonogram w czytelnych przedziałach godzinowych; kliknij wiersz, aby zobaczyć szczegóły</div></div><button id="timelineToggle" aria-pressed="true">Ukryj</button></div><div id="timeline"></div></section>
 <div id="results"></div>
 <section class="panel" id="mzkPanel"><details><summary>MZK 12 · pełny rozkład z tablic przystankowych</summary>
@@ -333,6 +336,9 @@ function renderTrainInventory(){
  const data=window.autoTrainAnchors;
  if(!Array.isArray(data)){panel.hidden=true;list.innerHTML='';return}
  panel.hidden=false;
+ const outbound=data.filter(a=>a.d==='M').length;
+ const inbound=data.filter(a=>a.d==='R').length;
+ $('trainInventoryCount').textContent='('+outbound+' odjazdów · '+inbound+' przyjazdów)';
  const sections=[
   {d:'M',heading:'ZE STAROGARDU',path:'Starogard Gdański → Tczew / Gdańsk Wrzeszcz',type:'out'},
   {d:'R',heading:'DO STAROGARDU',path:'Tczew / Gdańsk Wrzeszcz → Starogard Gdański',type:'in'}
