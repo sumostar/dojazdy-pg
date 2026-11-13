@@ -9,44 +9,45 @@
 <div class="headline"><div><b>PKP PLK · dane na żywo</b><div class="muted">Pobierane na żądanie przez bezpieczny Cloudflare Worker</div></div><span id="liveState" class="badge">Nie sprawdzono</span></div>
 <div class="controls"><label>Stacja <select id="stationPick"><option value="8607">Starogard Gdański</option><option value="7112">Tczew</option><option value="7534">Gdańsk Wrzeszcz</option></select></label><button class="primary" id="liveCheck">Sprawdź odjazdy PKP</button></div>
 <div id="liveResult" aria-live="polite"><div class="muted">Kliknij, aby pobrać pełną tablicę rozkładową oraz dostępne opóźnienia. Karty podróży działają także offline.</div></div>
-</section><section class="panel" id="statsPanel">
-<div class="headline"><div><b>Statystyki punktualności · Starogard Gdański</b><div class="muted">Przyjazdy i odjazdy · zapisane obserwacje z API</div></div><span id="statsBadge" class="badge">0 pomiarów</span></div>
-<p class="muted">Zliczamy tylko potwierdzone rzeczywiste czasy. Wiele odświeżeń tego samego pociągu liczy się jako jeden przejazd. Brak danych nie oznacza punktualności.</p>
-<div class="controls"><button id="statsGet" class="primary">Zbierz dzisiejsze dane</button><button id="statsExport">Pobierz CSV</button><button id="statsClear">Wyczyść lokalne pomiary</button></div>
-<div id="statsMessage" class="muted"></div><div id="statsResult"></div>
-<p class="muted">Archiwum jest zapisywane tylko w tej przeglądarce; nie jest to pełna historyczna baza PKP PLK. Aby zbierać dane codziennie bez otwierania aplikacji, potrzebny będzie harmonogram Cloudflare i trwała baza.</p>
 </section><div id="count" class="summary"></div><div id="results"></div>
 <section class="panel"><details><summary>Edytowanie siatki, import i eksport</summary><p class="muted">Dane zapisują się na tym urządzeniu. Nie ma automatycznych aktualizacji. Perony sprawdź przed podróżą.</p><div class="actions"><button id="export">Eksport JSON</button><button id="import">Import JSON</button><button id="restore">Przywróć bazę</button><input id="file" type="file" accept=".json" hidden></div></details></section>
-<footer>3 min pieszo dom–Andersa · 25 min PG–Wrzeszcz · domyślnie 8 min w Tczewie, 5 min MZK–PKP. Godziny z roboczej siatki listopad 2026; wyświetlane są tylko pełne warianty; pozostałe dane wymagają weryfikacji. Opóźnienia online jeszcze niedostępne.</footer></main>
+<section class="panel" id="statsPanel">
+<div class="headline"><div><b>Statystyki punktualności · Starogard Gdański</b><div class="muted">Przyjazdy i odjazdy · zapisane obserwacje z API</div></div><span id="statsBadge" class="badge">0 pomiarów</span></div>
+<p class="muted">To ciekawostka. Liczymy wyłącznie potwierdzone odjazdy i przyjazdy, których rzeczywista godzina już minęła. Ponowne odświeżenie nie zwiększa liczby kursów.</p>
+<div class="controls"><button id="statsGet" class="primary">Zbierz dzisiejsze dane</button><button id="statsExport">Pobierz CSV</button><button id="statsClear">Wyczyść lokalne pomiary</button></div>
+<div id="statsMessage" class="muted"></div><div id="statsResult"></div>
+<p class="muted">Dane lokalne i niepełna próba, nie oficjalna statystyka PLK. Starsze pomiary ze źle działającego filtra daty nie są przenoszone.</p>
+</section>
+<footer>5 min rano dom–Andersa · 3 min od Andersa do domu · 25 min PG–Wrzeszcz · domyślnie 8 min w Tczewie, 5 min MZK–PKP. Godziny z roboczej siatki listopad 2026; wyświetlane są tylko pełne warianty; pozostałe dane wymagają weryfikacji. Aktualne dane PKP PLK dostępne w tablicy odjazdów.</footer></main>
 <dialog id="dialog"><h3>Edytuj godziny i perony</h3><div id="edit"></div><div class="actions"><button class="primary" id="save">Zapisz</button><button id="cancel">Anuluj</button></div></dialog>
 <script>
 const raw=[
-["M|04:32|04:35|04:47|04:53|05:16|05:24|05:57|06:22|50700|55403|III/2"],
-["M|04:57|05:00|05:12|05:23|05:46|05:51|06:31|06:56|50702||"],
-["M|05:37|05:40|05:52|05:58|06:20|06:25|06:55|07:20|50704|55867|I/10"],
-["M|06:07|06:10|06:22|06:48|||||||"],
-["M|06:54|06:57|07:09|07:18|07:40|07:48|08:18|08:43||50693|IV/5"],
-["M|08:34|08:37|08:50|09:09|||||||"],
-["M|11:34|11:37|11:50|12:03|||||||"],
+["M|04:30|04:35|04:47|04:53|05:16|05:24|05:57|06:22|50700|55403|III/2"],
+["M|04:55|05:00|05:12|05:23|05:46|05:51|06:31|06:56|50702||"],
+["M|05:35|05:40|05:52|05:58|06:20|06:25|06:55|07:20|50704|55867|I/10"],
+["M|06:05|06:10|06:22|06:48|||||||"],
+["M|06:52|06:57|07:09|07:18|07:40|07:48|08:18|08:43||50693|IV/5"],
+["M|08:32|08:37|08:50|09:09|||||||"],
+["M|11:31|11:36|11:50|12:03|||||||"],
 ["R|12:50|13:15|13:55|14:16|14:39|14:54|15:11|55332|50781||"],
 ["R|13:57|14:22|15:00|15:13|15:36|15:54|16:11|50646|50783||IV/7"],
 ["R|14:07|14:32|15:04|15:13|15:36|15:54|16:11|55370|50783|I/2|IV/7"],
-["R|14:34|14:59|15:36|15:41|16:03|16:15|16:31|55306|50785||"],
-["R|14:58|15:23|16:01|16:37|16:58|17:15|17:31|50648|50787||"],
-["R|15:14|15:39|16:25|16:37|16:58|17:15|17:31|55342|50787||"],
-["R|16:07|16:32|||17:27|17:35|17:51|58206||I/2|"],
-["R|16:30|16:55|17:41|18:10|18:31|19:00|19:14||50789||"],
-["R|16:48|17:13|17:51|18:10|18:31|19:00|19:14||50789||"],
-["R|16:57|17:22|18:00|18:10|18:31|19:00|19:14||50789||"],
+["R|14:34|14:59|15:36|15:41|16:03|16:15|16:32|55306|50785||"],
+["R|14:58|15:23|16:01|16:37|16:58|17:15|17:32|50648|50787||"],
+["R|15:14|15:39|16:25|16:37|16:58|17:15|17:32|55342|50787||"],
+["R|16:07|16:32|||17:27|17:35|17:52|58206||I/2|"],
+["R|16:30|16:55|17:41|18:10|18:31|19:00|19:17||50789||"],
+["R|16:48|17:13|17:51|18:10|18:31|19:00|19:17||50789||"],
+["R|16:57|17:22|18:00|18:10|18:31|19:00|19:17||50789||"],
 ["R|19:29|19:54|20:29|20:37|21:00||| |50791||"],
 ["R|20:36|21:01|21:40|21:45|22:07||| |50793||"]
 ].map(x=>x[0].split('|'));
 const seed=raw.map((a,i)=>({id:'trip'+i,d:a[0],t:a.slice(1)}));
 let routes=JSON.parse(JSON.stringify(seed)),mode='M',all=false,editing=null;
-try{const v=JSON.parse(localStorage.getItem('dojazdy-pg-2026-v5'));if(Array.isArray(v)&&v.length)routes=v}catch(e){}
+try{const v=JSON.parse(localStorage.getItem('dojazdy-pg-2026-v6'));if(Array.isArray(v)&&v.length)routes=v}catch(e){}
 const $=x=>document.getElementById(x),min=t=>t&&/^\d\d:\d\d$/.test(t)?+t.slice(0,2)*60 + +t.slice(3):null;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function save(){try{localStorage.setItem('dojazdy-pg-2026-v5',JSON.stringify(routes))}catch(e){}}
+function save(){try{localStorage.setItem('dojazdy-pg-2026-v6',JSON.stringify(routes))}catch(e){}}
 function stages(r){
  const a=r.t,s=[];const add=(t,type,label,num,plat)=>{if(t&&t.trim())s.push({t,type,label,num,plat})};
  if(r.d==='M'){
@@ -207,7 +208,7 @@ $('liveCheck').onclick=async()=>{
  }finally{btn.disabled=false}
 };
 
-const STATS_KEY='dojazdy-pg-punktualnosc-v1';
+const STATS_KEY='dojazdy-pg-punktualnosc-v2';
 let statsData=[];
 try{
  const data=JSON.parse(localStorage.getItem(STATS_KEY));
@@ -215,7 +216,7 @@ try{
 }catch(e){}
 const statsDay=s=>{
  if(!s)return null;
- const match=String(s).match(/^(\\d{4}-\\d{2}-\\d{2})T/);
+ const match=String(s).match(/^(\d{4}-\d{2}-\d{2})T/);
  return match?match[1]:null;
 };
 function collectStats(payload,day){
@@ -232,9 +233,12 @@ function collectStats(payload,day){
     const planned=s[planField]||null,actual=s[actualField]||null;
     const d=s[delayField];
     if(!planned||!actual||s.isConfirmed!==true||d==null||!Number.isFinite(Number(d)))continue;
-    const plannedDay=statsDay(planned)||day;
+    const plannedDay=statsDay(planned);
     // Do not combine yesterday's or tomorrow's operations in today's sample.
-    if(plannedDay!==day)continue;
+    if(plannedDay!==day || statsDay(actual)!==day)continue;
+    // A confirmed timetable entry is not sufficient evidence of an elapsed journey.
+    const actualDate=new Date(actual);
+    if(!Number.isFinite(actualDate.getTime()) || actualDate.getTime()>Date.now()+60000)continue;
     const time=timetableTime(planned);
     if(!time)continue;
     // PLK operations can omit the passenger-facing train number but supply
