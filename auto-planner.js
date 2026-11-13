@@ -109,8 +109,8 @@
     if(!candidates.length)return null;
     const bus=candidates[candidates.length-1],stgArrival=bus.dep+14;
     const wrz=second?second.arr:first.arr;
-    if(home<4*60||home>12*60||wrz>15*60)return null;
     const home=bus.dep-5,pg=wrz+25;
+    if(home<4*60||home>12*60||wrz>15*60)return null;
     const direct=!second;
     const t=[clock(home),clock(bus.dep),clock(stgArrival),clock(first.dep),
       second?clock(first.arr):'',second?clock(second.dep):'',clock(wrz),clock(pg),
