@@ -115,7 +115,7 @@
     const t=[clock(home),clock(bus.dep),clock(stgArrival),clock(first.dep),
       second?clock(first.arr):'',second?clock(second.dep):'',clock(wrz),clock(pg),
       first.number,second?second.number:'',second?second.platform:first.platform,first.platform];
-    return {id:'auto-M-'+first.id+(second?'-'+second.id:''),d:'M',t,auto:true,direct,
+    return {id:'auto-M-'+first.id+(second?'-'+second.id:'')+'-bus-'+bus.dep,d:'M',t,auto:true,direct,
       anchors:[first.id,second?.id||''],source:'PKP PLK',
       uncertainBus:bus.tag==='s',busBuffer:first.dep-stgArrival};
   }
@@ -128,7 +128,7 @@
     const t=[clock(pg),clock(first.dep),second?clock(first.arr):'',
       second?clock(second.dep):'',clock(end.arr),clock(bus.dep),clock(home),
       first.number,second?second.number:'',first.platform,second?second.platform:''];
-    return {id:'auto-R-'+first.id+(second?'-'+second.id:''),d:'R',t,auto:true,direct:!second,
+    return {id:'auto-R-'+first.id+(second?'-'+second.id:'')+'-bus-'+bus.dep,d:'R',t,auto:true,direct:!second,
       anchors:[first.id,second?.id||''],source:'PKP PLK',busBuffer:bus.dep-end.arr};
   }
   function generate(payload,date){
