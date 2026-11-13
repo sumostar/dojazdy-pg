@@ -195,6 +195,45 @@ function card(r){
  return '<article id="route-'+esc(r.id)+'" class="trip"><div class="headline"><span class="name">'+esc(r.d==='M'?'Starogard → PG':'PG → Starogard')+'</span><span class="badge '+(risk||mzkRisk||!end?'warn':'')+'">'+tag+'</span></div><div class="hero"><div><strong>'+esc(a[0])+'</strong><div class="muted">'+(r.d==='M'?'Wyjście z domu':'Wyjście z PG')+'</div></div><div>→</div><div><strong>'+esc(end||'—')+'</strong><div class="muted">'+(end?(r.d==='M'?'Na PG':'W domu'):'Cel nieustalony')+'</div></div></div>'+journeySummary(r)+(end?'':'<div class="alert">Znamy tylko początek trasy. Nie zakładamy niepotwierdzonego połączenia.</div>')+'<div class="divider"></div>'+steps+'<div class="chips"><span>Tczew: '+(g.rail===null?'brak przesiadki / danych':g.rail+' min')+'</span><span>PKP–MZK: '+(g.bus===null?'brak danych':g.bus+' min')+'</span>'+(mzkRisk?'<span style="background:#fff0d9;color:#8c4e0d">Przy maks. 14 min MZK: '+maxMzkBuffer+' min na przesiadkę</span>':'')+'</div><div class="actions"><button data-edit="'+r.id+'">Edytuj godziny / perony</button><button data-copy="'+r.id+'">Kopiuj</button><button data-google="'+r.id+'">Google Calendar</button><button data-ics="'+r.id+'">ICS</button></div></article>';
 }
 const initialFilters={from:'04:00',to:'12:00',rail:8,bus:5,risky:true};
+function anchorKey(r){
+ if(r.anchors?.length)return r.d==='M'?r.anchors[0]:(r.anchors[1]||r.anchors[0]);
+ const a=r.t;
+ return r.d==='M'?'M|'+a[3]+'|'+a[8]:'R|'+(a[3]||a[1])+'|'+(a[8]||a[7]);
+}
+function recommendedRows(candidates,f,backups){
+ const groups=new Map();
+ for(const r of candidates){
+  const key=anchorKey(r);
+  if(!groups.has(key))groups.set(key,[]);
+  groups.get(key).push(r);
+ }
+ const chosen=[];
+ const railSafe=r=>gaps(r).rail===null||gaps(r).rail>=f.rail;
+ const busSafe=r=>gaps(r).bus===null||gaps(r).bus>=f.bus;
+ const end=r=>min(r.d==='M'?r.t[7]:r.t[6])??9999;
+ for(const options of groups.values()){
+  options.sort((x,y)=>{
+   if(railSafe(x)!==railSafe(y))return railSafe(x)?-1:1;
+   if(busSafe(x)!==busSafe(y))return busSafe(x)?-1:1;
+   if(x.d==='M')return end(x)-end(y)||min(y.t[0])-min(x.t[0]);
+   return min(y.t[0])-min(x.t[0])||end(x)-end(y);
+  });
+  const first=options[0];
+  chosen.push({...first,backup:false});
+  if(!backups)continue;
+  const firstMargin=gaps(first).rail;
+  if(firstMargin===null)continue;
+  // A backup is a different connecting train in Tczew, not another MZK.
+  const alt=options.filter(r=>{
+   const margin=gaps(r).rail;
+   const otherTrain=r.d==='M'?r.t[5]!==first.t[5]:r.t[1]!==first.t[1];
+   return otherTrain&&margin!==null&&margin>firstMargin&&margin<=firstMargin+60;
+  }).sort((x,y)=>x.d==='M'?end(x)-end(y):min(y.t[0])-min(x.t[0]))[0];
+  if(alt)chosen.push({...alt,backup:true});
+ }
+ return {chosen,services:groups.size};
+}
+
 let appliedFilters={...initialFilters};
 function readFilterInputs(){
  const earliest=min($('from').value),latest=min($('to').value);
@@ -203,32 +242,32 @@ function readFilterInputs(){
 }
 function render(){
  const f=appliedFilters;
- const full=activeRoutes().filter(r=>r.d===mode&&min(r.t[0])!==null&&min(r.d==='M'?r.t[7]:r.t[6])!==null);
- const reason={early:0,late:0,rail:0,bus:0};
- const list=full.filter(r=>{
-   const start=min(r.t[0]),end=min(r.d==='M'?r.t[7]:r.t[6]),g=gaps(r);
-   if(all)return true;
-   if(f.earliest!==null&&start<f.earliest){reason.early++;return false}
-   if(f.latest!==null&&end>f.latest){reason.late++;return false}
-   if(!f.risky&&g.rail!==null&&g.rail<f.rail){reason.rail++;return false}
-   if(!f.risky&&g.bus!==null&&g.bus<f.bus){reason.bus++;return false}
-   return true;
- }).sort((x,y)=>min(x.t[0])-min(y.t[0]));
- $('count').textContent=(Array.isArray(window.autoRoutes)?'Rozkład automatyczny PKP PLK':'Zapisane warianty offline')+' · '+list.length+' z '+full.length+' kompletnych wariantów';
+ const complete=activeRoutes().filter(r=>r.d===mode&&min(r.t[0])!==null&&min(r.d==='M'?r.t[7]:r.t[6])!==null);
+ const candidates=complete.filter(r=>{
+  const start=min(r.t[0]),end=min(r.d==='M'?r.t[7]:r.t[6]),g=gaps(r);
+  if(all)return true;
+  if(f.earliest!==null&&start<f.earliest)return false;
+  if(f.latest!==null&&end>f.latest)return false;
+  if(!f.risky&&g.rail!==null&&g.rail<f.rail)return false;
+  if(!f.risky&&g.bus!==null&&g.bus<f.bus)return false;
+  return true;
+ });
+ const choice=recommendedRows(candidates,f,$('backupToggle').checked);
+ const list=choice.chosen.sort((a,b)=>min(a.t[0])-min(b.t[0])||Number(a.backup)-Number(b.backup));
+ const totalServices=new Set(complete.map(anchorKey)).size;
+ $('count').textContent=(Array.isArray(window.autoRoutes)?'PKP PLK · POLREGIO / REG':'Zapisane warianty offline')+
+ ' · '+choice.services+' z '+totalServices+' kursów · '+list.length+' wariantów';
+ $('all').textContent=all?'Powrót do filtrów':'Wszystkie pełne';
  $('filterHint').classList.remove('filterPending');
- $('filterHint').textContent=all?'Pokazuję wszystkie kompletne warianty, bez ograniczeń godzin i marginesów.':
-   'Aktywne: wyjście od '+chartTime(f.earliest)+' · dotarcie do '+chartTime(f.latest)+
-   (f.risky?' · krótkie przesiadki widoczne':' · minimum '+f.rail+' min Tczew, '+f.bus+' min PKP–MZK');
- const detail=all?'':[
-   reason.early?'Przed wybraną godziną: '+reason.early:null,
-   reason.late?'Zbyt późny przyjazd: '+reason.late:null,
-   reason.rail?'Krótka przesiadka kolejowa: '+reason.rail:null,
-   reason.bus?'Krótka przesiadka PKP–MZK: '+reason.bus:null
- ].filter(Boolean).join(' · ');
+ $('filterHint').textContent=all?'Wszystkie pełne kursy, bez ograniczenia godzin.':
+ 'Aktywne: wyjście od '+chartTime(f.earliest)+' · dotarcie do '+chartTime(f.latest)+
+ (f.risky?' · krótkie przesiadki dopuszczone':' · min. '+f.rail+' min Tczew, '+f.bus+' min MZK–PKP');
+ const missing=totalServices-choice.services;
+ const summary=missing&&!all?'<p class="filterSummary">'+missing+' kursów nie spełnia wybranego zakresu godzin lub marginesów.</p>':'';
  renderTimeline(list);
- $('results').innerHTML=(detail?'<div class="filterSummary"><strong>Ukryte warianty:</strong> '+detail+'</div>':'')+
- (list.length?list.map(card).join(''):
- '<div class="panel"><b>Filtry ukryły wszystkie dostępne pełne warianty.</b><p>Łącznie zapisanych pełnych podróży w tym kierunku: '+full.length+'. Możesz pokazać wszystkie albo zmienić zakres godzin. Krótkie przesiadki nie są usuwane z bazy.</p><button id="showall" class="primary">Pokaż wszystkie pełne</button></div>');
+ $('results').innerHTML=summary+(list.length?list.map(card).join(''):
+  '<div class="panel"><b>Brak pełnych podróży spełniających filtr.</b><p>Przed filtrowaniem jest '+totalServices+
+  ' kursów w tym kierunku. Sprawdź godziny lub marginesy.</p><button id="showall" class="primary">Pokaż wszystkie pełne</button></div>');
  if($('showall'))$('showall').onclick=()=>{all=true;render()};
 }
 function applyFilters(){
