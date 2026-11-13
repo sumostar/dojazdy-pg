@@ -1,5 +1,5 @@
 <!doctype html><html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#003767"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon.svg" type="image/svg+xml"><title>Dojazdy PG</title><style>
-:root{font:15px system-ui,Arial;color:#15283e;background:#f3f6fb}*{box-sizing:border-box}body{margin:0}header{padding:21px 16px;background:#003767;color:white}header h1{margin:0;font-size:24px}header p{margin:5px 0 0;font-size:13px;color:#c9e2fa}main{max-width:720px;margin:auto;padding:12px 12px 50px}.panel,.trip{background:white;border:1px solid #d9e3ef;border-radius:16px;padding:14px;margin:0 0 12px}.tabs{display:flex;gap:8px}.tabs button{flex:1}.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:15px 0}.fields label{font-size:12px;font-weight:700;color:#53677d}input,select{display:block;width:100%;padding:10px;font:inherit;margin-top:5px;border:1px solid #b7c9dc;border-radius:9px;background:white;color:#142a46}input[type=checkbox]{display:inline;width:auto}button{padding:10px 12px;border:1px solid #9eb2c9;border-radius:10px;background:white;color:#003767;font:inherit;font-weight:700;cursor:pointer}button.active,button.primary{background:#003767;color:white;border-color:#003767}.controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:12px 0}.controls label{font-size:13px}.headline{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}.name{color:#53677d;font-size:12px;font-weight:700}.badge{font-size:11px;font-weight:700;padding:5px 8px;border-radius:14px;background:#e4f2e9;color:#226442;white-space:nowrap}.badge.warn{background:#fff0d9;color:#8c4e0d}.hero{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:13px 0}.hero>div:last-child{text-align:right}.hero strong{font-size:30px;font-variant-numeric:tabular-nums}.muted{font-size:12px;color:#64768b}.divider{height:1px;background:#e5ebf2;margin:12px 0}.step{display:grid;grid-template-columns:92px 1fr;gap:12px;padding:8px 0;border-bottom:1px solid #eff3f8}.step:last-child{border:0}.hour{text-align:center;font-variant-numeric:tabular-nums;font-size:14px;font-weight:650;padding:5px}.depart .hour{background:#eaf1f9;color:#003767;border-radius:9px;padding:8px 2px}.depart .hour strong{display:block;font-size:25px;line-height:1.15}.depart .hour small{display:block;font-size:9px;letter-spacing:.5px}.place{font-weight:650;padding-top:3px}.depart .place{font-weight:800}.detail{font-size:13px;margin-top:4px;color:#526780}.platform{font-size:14px;font-weight:850;color:#003767;margin-top:5px}.unknown{color:#a05f15}.chips{margin:12px 0 4px;display:flex;gap:6px;flex-wrap:wrap}.chips span{background:#eef3f9;border-radius:12px;padding:5px 8px;font-size:11px}.alert{background:#fff4e3;padding:10px;border-radius:10px;font-size:13px;margin:8px 0}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.actions button{font-size:12px;padding:8px}.summary{font-weight:750;margin:12px 2px}details summary{font-weight:750;cursor:pointer}textarea{width:100%;min-height:150px}dialog{border:0;border-radius:14px;width:min(95vw,600px);max-height:85vh;overflow:auto}dialog::backdrop{background:#0008}.edit{display:grid;grid-template-columns:90px 1fr 100px;gap:6px;align-items:center;margin:7px 0}.edit label{font-size:12px}.edit input{padding:6px;min-width:0}footer{font-size:12px;color:#64768b;padding:12px}.statGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:10px 0}.statTile{background:#eef3f9;border-radius:10px;padding:10px 7px;text-align:center}.statTile strong{font-size:22px;color:#003767;display:block}.statTile small{font-size:11px;color:#54677d}.statMeta{font-size:12px;color:#64768b}.statSection{border-top:1px solid #dce7f0;padding:12px 0}#statsPanel .controls button{font-size:12px}#statsMessage{margin:8px 0}#stationPick{min-width:165px}#liveResult{max-height:400px;overflow:auto}.liveRow{border-top:1px solid #e4eaf2;padding:10px 0;display:grid;grid-template-columns:78px 1fr;gap:12px}.liveRow strong{font-size:22px;color:#003767;font-variant-numeric:tabular-nums}.liveSub{font-size:12px;color:#54677d;margin-top:4px}.liveDelay{font-weight:800;color:#a34e0f}.liveGood{font-weight:800;color:#156e47}.mzkGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:6px;margin:12px 0}.mzkTime{background:#eef3f9;border-radius:9px;padding:10px 4px;text-align:center;color:#003767;font-weight:800;font-variant-numeric:tabular-nums}.mzkTime small{font-size:9px;color:#826314}#autoStatus{margin:7px 0;font-size:12px;line-height:1.4}#autoStatus[data-state="success"]{color:#126948}#autoStatus[data-state="error"]{color:#a04b20}.nowButton{display:inline-flex;margin-top:7px;padding:8px 12px;background:#e9f3fc;font-size:12px;white-space:nowrap}.filterSummary{margin:8px 0;font-size:12px;line-height:1.6;color:#53667b}.filterSummary strong{color:#17324d}.filterPending{color:#9a621d!important;font-weight:650}#applyFilters{padding:12px 16px} .timepick{display:flex;gap:5px;align-items:center;margin-top:5px}.timepick input{min-width:0;margin:0;text-align:center}.timepick button{padding:8px;min-width:38px;font-size:20px}.dateLabel{display:block;font-size:12px;font-weight:700;margin-top:9px;color:#53677d}.dateLabel input{max-width:240px}
+:root{font:15px system-ui,Arial;color:#15283e;background:#f3f6fb}*{box-sizing:border-box}body{margin:0}header{padding:21px 16px;background:#003767;color:white}header h1{margin:0;font-size:24px}header p{margin:5px 0 0;font-size:13px;color:#c9e2fa}main{max-width:720px;margin:auto;padding:12px 12px 50px}.panel,.trip{background:white;border:1px solid #d9e3ef;border-radius:16px;padding:14px;margin:0 0 12px}.tabs{display:flex;gap:8px}.tabs button{flex:1}.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:15px 0}.fields label{font-size:12px;font-weight:700;color:#53677d}input,select{display:block;width:100%;padding:10px;font:inherit;margin-top:5px;border:1px solid #b7c9dc;border-radius:9px;background:white;color:#142a46}input[type=checkbox]{display:inline;width:auto}button{padding:10px 12px;border:1px solid #9eb2c9;border-radius:10px;background:white;color:#003767;font:inherit;font-weight:700;cursor:pointer}button.active,button.primary{background:#003767;color:white;border-color:#003767}.controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:12px 0}.controls label{font-size:13px}.headline{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}.name{color:#53677d;font-size:12px;font-weight:700}.badge{font-size:11px;font-weight:700;padding:5px 8px;border-radius:14px;background:#e4f2e9;color:#226442;white-space:nowrap}.badge.warn{background:#fff0d9;color:#8c4e0d}.hero{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:13px 0}.hero>div:last-child{text-align:right}.hero strong{font-size:30px;font-variant-numeric:tabular-nums}.muted{font-size:12px;color:#64768b}.divider{height:1px;background:#e5ebf2;margin:12px 0}.step{display:grid;grid-template-columns:92px 1fr;gap:12px;padding:8px 0;border-bottom:1px solid #eff3f8}.step:last-child{border:0}.hour{text-align:center;font-variant-numeric:tabular-nums;font-size:14px;font-weight:650;padding:5px}.depart .hour{background:#eaf1f9;color:#003767;border-radius:9px;padding:8px 2px}.depart .hour strong{display:block;font-size:25px;line-height:1.15}.depart .hour small{display:block;font-size:9px;letter-spacing:.5px}.place{font-weight:650;padding-top:3px}.depart .place{font-weight:800}.detail{font-size:13px;margin-top:4px;color:#526780}.platform{font-size:14px;font-weight:850;color:#003767;margin-top:5px}.unknown{color:#a05f15}.chips{margin:12px 0 4px;display:flex;gap:6px;flex-wrap:wrap}.chips span{background:#eef3f9;border-radius:12px;padding:5px 8px;font-size:11px}.alert{background:#fff4e3;padding:10px;border-radius:10px;font-size:13px;margin:8px 0}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.actions button{font-size:12px;padding:8px}.summary{font-weight:750;margin:12px 2px}details summary{font-weight:750;cursor:pointer}textarea{width:100%;min-height:150px}dialog{border:0;border-radius:14px;width:min(95vw,600px);max-height:85vh;overflow:auto}dialog::backdrop{background:#0008}.edit{display:grid;grid-template-columns:90px 1fr 100px;gap:6px;align-items:center;margin:7px 0}.edit label{font-size:12px}.edit input{padding:6px;min-width:0}footer{font-size:12px;color:#64768b;padding:12px}.statGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:10px 0}.statTile{background:#eef3f9;border-radius:10px;padding:10px 7px;text-align:center}.statTile strong{font-size:22px;color:#003767;display:block}.statTile small{font-size:11px;color:#54677d}.statMeta{font-size:12px;color:#64768b}.statSection{border-top:1px solid #dce7f0;padding:12px 0}#statsPanel .controls button{font-size:12px}#statsMessage{margin:8px 0}#stationPick{min-width:165px}#liveDirection{min-width:210px}#liveBox .controls label{min-width:155px}#liveBox .controls label input[type="checkbox"]{width:auto;margin-right:5px}#liveResult{max-height:400px;overflow:auto}.liveRow{border-top:1px solid #e4eaf2;padding:10px 0;display:grid;grid-template-columns:78px 1fr;gap:12px}.liveRow strong{font-size:22px;color:#003767;font-variant-numeric:tabular-nums}.liveSub{font-size:12px;color:#54677d;margin-top:4px}.liveDelay{font-weight:800;color:#a34e0f}.liveGood{font-weight:800;color:#156e47}.mzkGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:6px;margin:12px 0}.mzkTime{background:#eef3f9;border-radius:9px;padding:10px 4px;text-align:center;color:#003767;font-weight:800;font-variant-numeric:tabular-nums}.mzkTime small{font-size:9px;color:#826314}#autoStatus{margin:7px 0;font-size:12px;line-height:1.4}#autoStatus[data-state="success"]{color:#126948}#autoStatus[data-state="error"]{color:#a04b20}.nowButton{display:inline-flex;margin-top:7px;padding:8px 12px;background:#e9f3fc;font-size:12px;white-space:nowrap}.filterSummary{margin:8px 0;font-size:12px;line-height:1.6;color:#53667b}.filterSummary strong{color:#17324d}.filterPending{color:#9a621d!important;font-weight:650}#applyFilters{padding:12px 16px} .timepick{display:flex;gap:5px;align-items:center;margin-top:5px}.timepick input{min-width:0;margin:0;text-align:center}.timepick button{padding:8px;min-width:38px;font-size:20px}.dateLabel{display:block;font-size:12px;font-weight:700;margin-top:9px;color:#53677d}.dateLabel input{max-width:240px}
 
 /* Shared-axis journey timeline; no chart library required */
 :root{--walk:#8799ac;--bus:#18866f;--train:#003767;--wait:#d49b46}
@@ -26,7 +26,11 @@
 <div id="filterHint" class="muted" aria-live="polite">Ustaw godziny i marginesy, następnie wybierz „Zastosuj filtry”.</div><div class="controls"><button class="primary" id="autoRefresh">Odśwież połączenia PKP PLK</button></div><div id="autoStatus" class="muted" role="status" aria-live="polite">Uruchamianie automatycznego planowania…</div><label class="dateLabel">Data podróży <input id="travelDate" type="date"></label></section>
 <section class="panel" id="liveBox">
 <div class="headline"><div><b>PKP PLK · dane na żywo</b><div class="muted">Pobierane na żądanie przez bezpieczny Cloudflare Worker</div></div><span id="liveState" class="badge">Nie sprawdzono</span></div>
-<div class="controls"><label>Stacja <select id="stationPick"><option value="8607">Starogard Gdański</option><option value="7112">Tczew</option><option value="7534">Gdańsk Wrzeszcz</option></select></label><button class="primary" id="liveCheck">Sprawdź odjazdy PKP</button></div>
+<div class="controls">
+<label>Stacja <select id="stationPick"><option value="8607">Starogard Gdański</option><option value="7112">Tczew</option><option value="7534">Gdańsk Wrzeszcz</option></select></label>
+<label>Kierunek <select id="liveDirection"><option value="out:7112">Do Tczewa</option><option value="in:7112">Z Tczewa (przyjazdy)</option><option value="out:all">Wszystkie odjazdy</option></select></label>
+<button class="primary" id="liveCheck">Sprawdź pociągi PKP</button></div>
+<div class="controls"><label><input id="liveRegional" type="checkbox" checked> Tylko POLREGIO / REG (bilet miesięczny)</label></div>
 <div id="liveResult" aria-live="polite"><div class="muted">Kliknij, aby pobrać pełną tablicę rozkładową oraz dostępne opóźnienia. Karty podróży działają także offline.</div></div>
 </section><div id="count" class="summary"></div>
 <section class="panel" id="timelinePanel"><div class="headline"><div><b>Porównanie czasu podróży</b><div class="muted">Wszystkie warianty na jednej osi godzinowej · kliknij wiersz, aby przejść do szczegółów</div></div><button id="timelineToggle" aria-pressed="true">Ukryj</button></div><div id="timeline"></div></section>
@@ -358,75 +362,156 @@ function timetableTime(value){
  const h=+(str.match(/(\d+)H/)||[])[1]||0,mi=+(str.match(/(\d+)M/)||[])[1]||0;
  return str.startsWith('P')?String(h%24).padStart(2,'0')+':'+String(mi).padStart(2,'0'):null;
 }
-function buildLiveBoard(schedule,operations,id,date){
- const planned=[];
- for(const train of Array.isArray(schedule?.routes)?schedule.routes:[]){
-  if(Array.isArray(train.operatingDates)&&train.operatingDates.length&&!train.operatingDates.includes(date))continue;
-  for(const stop of Array.isArray(train.stations)?train.stations:[]){
-   if(String(stop.stationId)!==String(id))continue;
-   const t=timetableTime(stop.departureTime);
-   if(!t)continue;
-   const variant=(stop.platformVariants||[]).find(v=>(v.operatingDates||[]).includes(date));
-   planned.push({t,nr:stop.departureTrainNumber||train.nationalNumber||'',cat:stop.departureCommercialCategory||train.commercialCategorySymbol||'',p:variant?.departurePlatform??stop.departurePlatform??'',track:variant?.departureTrack??stop.departureTrack??'',actual:null,delay:null,confirmed:false});
-  }
- }
- const executed=[];
- for(const train of Array.isArray(operations?.trains)?operations.trains:[]){
-  for(const stop of Array.isArray(train.stations)?train.stations:[]){
-   if(String(stop.stationId)!==String(id))continue;
-   const t=timetableTime(stop.plannedDeparture)||timetableTime(stop.plannedDepartureTime);
-   if(!t)continue;
-   const d=stop.departureDelayMinutes;
-   executed.push({t,nr:stop.departureTrainNumber||train.nationalNumber||'',cat:'',p:'',track:'',actual:timetableTime(stop.actualDeparture),delay:d==null?null:Number(d),confirmed:stop.isConfirmed===true});
-  }
- }
- const dedup=new Map();
- // The PLK endpoint may contain several records for the same passenger departure;
- // schedule departure time + public train number is a passenger-facing identity.
- for(const x of planned){
-  const key=x.t+'|'+(x.nr||'');
-  const old=dedup.get(key);
-  if(!old || (!old.p&&x.p))dedup.set(key,x);
- }
- for(const x of executed){
-  const exact=x.t+'|'+(x.nr||'');
-  let key=exact;
-  if(!dedup.has(key)){
-   const candidates=[...dedup.entries()].filter(([k,v])=>v.t===x.t&&(!x.nr||!v.nr));
-   if(candidates.length===1)key=candidates[0][0];
-  }
-  const old=dedup.get(key);
-  if(!old){dedup.set(key,x);continue}
-  if(old.confirmed&&!x.confirmed)continue;
-  // Contradictory confirmations are possible for technical route records.
-  // Do not let an arbitrary last record erase a reported delay.
-  const chooseX=(!old.confirmed&&x.confirmed) ||
-    (old.confirmed===x.confirmed &&
-     x.delay!=null&&(old.delay==null||x.delay>old.delay));
-  const chosen=chooseX?x:old;
-  const diffs=[...(old.reportedDelays||[old.delay]),x.delay].filter(v=>v!=null);
-  dedup.set(key,{...old,actual:chosen.actual||old.actual,delay:chosen.delay??old.delay,
-   reportedDelays:[...new Set(diffs)],confirmed:old.confirmed||x.confirmed,
-   nr:old.nr||x.nr,p:old.p||x.p});
- }
- // If number is unknown in the API, do not count technical duplicate records
- // of the same clock-time as separate trains.
- const knownTimes=new Set([...dedup.values()].filter(x=>x.nr).map(x=>x.t));
- const seenUnknown=new Set();
- let rows=[...dedup.values()].filter(x=>{
-  if(x.nr)return true;
-  if(knownTimes.has(x.t)||seenUnknown.has(x.t))return false;
-  seenUnknown.add(x.t);return true;
- }).sort((a,b)=>min(a.t)-min(b.t));
- const localToday=new Date().toLocaleDateString('sv-SE');
- if(localToday===date){const n=new Date();const now=n.getHours()*60+n.getMinutes();rows=rows.filter(x=>min(x.t)>=now-90)}
- const info='<p class="muted">Odjazdy PKP PLK, '+esc(date)+': '+rows.length+' unikalnych pozycji. '+(planned.length?'Rozkład planowy + wykonanie.':'Brak rozkładu planowego w odpowiedzi — wyłącznie wykonanie.')+'</p>';
- if(!rows.length)return info+'<div class="alert">Nie znaleziono odjazdów. Sprawdź datę lub ponów pobieranie.</div>';
- return info+rows.map(x=>'<div class="liveRow"><div><strong>'+esc(x.t)+'</strong><div class="muted">plan</div></div><div><b>'+esc((x.cat?x.cat+' ':'')+(x.nr?'Pociąg '+x.nr:'Odjazd ze stacji'))+'</b>'+
- (x.actual?'<div class="liveSub">Zgłoszony odjazd: <b>'+esc(x.actual)+'</b></div>':'')+
- (x.delay!=null?'<div class="'+(x.delay>0?'liveDelay':'liveGood')+'">'+(x.delay>0?'Opóźnienie +'+x.delay+' min':x.delay<0?'Przed czasem '+x.delay+' min':'Bez opóźnienia')+'</div>':'')+
- '<div class="platform '+(!x.p?'unknown':'')+'">'+(x.p?'Peron '+esc(x.p):'Sprawdź peron')+(x.track?' · tor '+esc(x.track):'')+'</div></div></div>').join('');
+const liveDirectionChoices={
+ '8607':[['out:7112','Do Tczewa'],['in:7112','Z Tczewa · przyjazdy'],['out:all','Wszystkie odjazdy']],
+ '7112':[['out:7534','Do Wrzeszcza'],['out:8607','Do Starogardu'],['in:8607','Ze Starogardu · przyjazdy'],['in:7534','Z Wrzeszcza · przyjazdy'],['out:all','Wszystkie odjazdy']],
+ '7534':[['out:7112','Do Tczewa'],['in:7112','Z Tczewa · przyjazdy'],['out:all','Wszystkie odjazdy']]
+};
+let liveCache=null;
+function setLiveDirections(){
+ const id=$('stationPick').value, options=liveDirectionChoices[id]||[];
+ $('liveDirection').innerHTML=options.map(([v,label])=>'<option value="'+v+'">'+esc(label)+'</option>').join('');
 }
+function liveDirectionDescription(){
+ return $('liveDirection').selectedOptions?.[0]?.textContent ||
+   (liveDirectionChoices[$('stationPick').value]||[]).find(p=>p[0]===$('liveDirection').value)?.[1] || '';
+}
+function liveStopTime(stop,event){
+ return timetableTime(event==='arrival'
+  ? (stop.arrivalTime??stop.plannedArrival??stop.plannedArrivalTime)
+  : (stop.departureTime??stop.plannedDeparture??stop.plannedDepartureTime));
+}
+function liveScheduledOn(route,date){
+ const days=route.operatingDates;
+ return !Array.isArray(days)||days.length===0||days.includes(date);
+}
+function liveRegionalOnly(route){
+ if(!$('liveRegional').checked)return true;
+ if(window.PGAuto?.isPolregioRoute)return window.PGAuto.isPolregioRoute(route);
+ const carrier=String(route.carrierCode||route.carrierName||'').toUpperCase();
+ if(carrier)return carrier==='PR'||carrier.includes('POLREGIO')||carrier.includes('PRZEWOZY REGIONALNE');
+ const cat=String(route.commercialCategorySymbol||'').toUpperCase();
+ return ['REG','R','PR','RP'].includes(cat) ||
+ (route.stations||[]).some(s=>['REG','R','PR','RP'].includes(String(s.departureCommercialCategory||s.arrivalCommercialCategory||'').toUpperCase()));
+}
+function liveMatchesDirection(stops,i,selector){
+ const [movement,other]=selector.split(':');
+ if(movement==='out'&&other==='all')return true;
+ const subset=movement==='in'?stops.slice(0,i):stops.slice(i+1);
+ return subset.some(s=>String(s.stationId)===other);
+}
+function liveDirectionName(code){
+ return stationNames[code]||'innej stacji';
+}
+function buildLiveBoard(schedule,operations,id,date){
+ const choice=$('liveDirection').value;
+ const arriving=choice.startsWith('in:');
+ const event=arriving?'arrival':'departure';
+ const positionName=arriving?'Przyjazd':'Odjazd';
+ const goal=choice.split(':')[1];
+ if(!Array.isArray(schedule?.routes)){
+  return '<div class="alert">Nie mam pełnego rozkładu planowego z przebiegiem trasy, więc nie mogę wiarygodnie określić kierunku. Dane wykonania nie wystarczą do takiego filtrowania. Ponów pobieranie.</div>';
+ }
+ const rowsByKey=new Map();
+ let incompleteRoutes=0;
+ for(const route of schedule.routes){
+  if(!liveScheduledOn(route,date)||!liveRegionalOnly(route))continue;
+  const stations=Array.isArray(route.stations)?route.stations:[];
+  for(let i=0;i<stations.length;i++){
+   const stop=stations[i];
+   if(String(stop.stationId)!==String(id))continue;
+   const t=liveStopTime(stop,event);
+   if(!t)continue;
+   if(!liveMatchesDirection(stations,i,choice)){
+    if(goal!=='all'&&stations.length===1)incompleteRoutes++;
+    continue;
+   }
+   const variants=Array.isArray(stop.platformVariants)?stop.platformVariants:[];
+   const variant=variants.find(v=>Array.isArray(v.operatingDates)&&v.operatingDates.includes(date))||stop;
+   const p=variant[arriving?'arrivalPlatform':'departurePlatform']??'';
+   const track=variant[arriving?'arrivalTrack':'departureTrack']??'';
+   const nr=String((arriving?stop.arrivalTrainNumber:stop.departureTrainNumber)||
+        route.nationalNumber||route.trainNumber||'').trim();
+   const cat=String((arriving?stop.arrivalCommercialCategory:stop.departureCommercialCategory)||
+        route.commercialCategorySymbol||'').trim();
+   const identity=nr||('route:'+String(route.scheduleId||'')+'/'+String(route.orderId||''));
+   const key=t+'|'+identity;
+   const target=goal==='all'?'':goal;
+   const row={t,nr,cat,p,track,actual:null,delay:null,confirmed:false,event,target};
+   const previous=rowsByKey.get(key);
+   if(!previous||(!previous.p&&row.p))rowsByKey.set(key,row);
+  }
+ }
+ const known=[...rowsByKey.values()];
+ // Execution data only annotates an already identified scheduled train.
+ // No additional operations-only rows can enter a direction-filtered board.
+ for(const train of Array.isArray(operations?.trains)?operations.trains:[]){
+  const trainNr=String(train.nationalNumber||train.trainNumber||train.publicTrainNumber||'').trim();
+  for(const stop of Array.isArray(train.stations)?train.stations:[]){
+   if(String(stop.stationId)!==String(id))continue;
+   const rawPlan=arriving?(stop.plannedArrival??stop.plannedArrivalTime):(stop.plannedDeparture??stop.plannedDepartureTime);
+   const t=timetableTime(rawPlan);
+   if(!t)continue;
+   if(typeof rawPlan==='string'&&/^\\d{4}-\\d{2}-\\d{2}T/.test(rawPlan)&&rawPlan.slice(0,10)!==date)continue;
+   const nr=String((arriving?stop.arrivalTrainNumber:stop.departureTrainNumber)||trainNr).trim();
+   const matching=known.filter(r=>r.t===t&&(!nr||!r.nr||r.nr===nr));
+   if(matching.length!==1)continue;
+   const row=matching[0];
+   const actual=timetableTime(arriving?stop.actualArrival:stop.actualDeparture);
+   const delayValue=arriving?stop.arrivalDelayMinutes:stop.departureDelayMinutes;
+   const delay=delayValue==null?null:Number(delayValue);
+   const confirmed=stop.isConfirmed===true;
+   if(row.confirmed&&!confirmed)continue;
+   if(confirmed&&!row.confirmed || !row.actual&&actual || row.delay==null&&Number.isFinite(delay)){
+    row.actual=actual||row.actual;
+    row.delay=Number.isFinite(delay)?delay:row.delay;
+    row.confirmed=confirmed||row.confirmed;
+   }
+  }
+ }
+ const all=[...rowsByKey.values()].sort((a,b)=>min(a.t)-min(b.t));
+ const today=new Date().toLocaleDateString('sv-SE')===date;
+ const now=new Date(),nowM=now.getHours()*60+now.getMinutes();
+ const shown=all.filter(r=>!today||min(r.t)>=nowM-90);
+ const directionLabel=liveDirectionDescription();
+ const info='<p class="muted"><b>'+esc(stationNames[id]||id)+' · '+esc(directionLabel)+'</b> · '+esc(date)+
+ ': '+all.length+' unikalnych '+(arriving?'przyjazdów':'odjazdów')+' w wybranym kierunku'+
+ (shown.length!==all.length?' · wyświetlam '+shown.length+' (od 90 min przed obecną godziną)':'')+
+ '. Rozkład planowy + dostępne dane wykonania.</p>';
+ if(!shown.length){
+  return info+'<div class="alert">'+(all.length?
+   'Wcześniejsze połączenia są ukryte przez filtr ostatnich 90 minut.':
+   'Nie znaleziono potwierdzonych w rozkładzie połączeń w tym kierunku. '+
+   (incompleteRoutes?'Odpowiedź może zawierać tylko część trasy; spróbuj ponownie.':'Sprawdź inne kierunki lub datę.'))+'</div>';
+ }
+ return info+shown.map(r=>
+  '<div class="liveRow"><div><strong>'+esc(r.t)+'</strong><div class="muted">plan</div></div><div>'+
+  '<b>'+esc((r.cat?r.cat+' ':'')+(r.nr?'Pociąg '+r.nr:positionName+' na stacji'))+'</b>'+
+  (r.target?'<div class="liveSub">'+(arriving?'Z: ':'Do: ')+esc(liveDirectionName(r.target))+'</div>':'')+
+  (r.actual?'<div class="liveSub">Zgłoszony '+(arriving?'przyjazd':'odjazd')+': <b>'+esc(r.actual)+'</b></div>':'')+
+  (r.delay!=null?'<div class="'+(r.delay>0?'liveDelay':'liveGood')+'">'+
+    (r.delay>0?'Opóźnienie +'+r.delay+' min':r.delay<0?'Przed czasem '+Math.abs(r.delay)+' min':'Bez opóźnienia')+'</div>':'')+
+  '<div class="platform '+(!r.p?'unknown':'')+'">'+(r.p?'Peron '+esc(r.p):'Sprawdź peron')+
+    (r.track?' · tor '+esc(r.track):'')+'</div></div></div>').join('');
+}
+function renderCachedLive(){
+ if(!liveCache||liveCache.id!==$('stationPick').value||
+    liveCache.date!==$('travelDate').value)return;
+ $('liveResult').innerHTML=buildLiveBoard(liveCache.planned,liveCache.operations,liveCache.id,liveCache.date)+
+ '<div class="alert">Kierunek ustalony na podstawie kolejności stacji w rozkładzie PKP PLK. Weryfikuj peron przed podróżą.</div>';
+}
+setLiveDirections();
+$('stationPick').addEventListener('change',()=>{
+ setLiveDirections();liveCache=null;
+ $('liveState').textContent='Nie sprawdzono';
+ $('liveResult').innerHTML='<p class="muted">Wybrano inną stację. Kliknij „Sprawdź pociągi PKP”.</p>';
+});
+$('liveDirection').addEventListener('change',renderCachedLive);
+$('liveRegional').addEventListener('change',renderCachedLive);
+$('travelDate').addEventListener('change',()=>{
+ liveCache=null;$('liveState').textContent='Nie sprawdzono';
+ $('liveResult').innerHTML='<p class="muted">Wybrano inną datę. Sprawdź ponownie pociągi PKP.</p>';
+});
 $('liveCheck').onclick=async()=>{
  const id=$('stationPick').value,btn=$('liveCheck');
  btn.disabled=true;$('liveState').textContent='Pobieranie';$('liveResult').innerHTML='<p class="muted">Łączenie z PKP PLK…</p>';
@@ -437,16 +522,16 @@ $('liveCheck').onclick=async()=>{
   let planned=null,operations=null;
   try{
    const responses=await Promise.allSettled([
-    get(API+'/schedules?date='+encodeURIComponent(date)+'&stations='+encodeURIComponent(id)),
+    get(API+'/schedules?date='+encodeURIComponent(date)+'&stations=8607%2C7112%2C7534'),
     get(API+'/operations?stations='+encodeURIComponent(id))
    ]);
    if(responses[0].status==='fulfilled')planned=responses[0].value;
    if(responses[1].status==='fulfilled')operations=responses[1].value;
    if(!planned&&!operations)throw Error('Błąd obu źródeł PKP');
   }finally{clearTimeout(timer)}
-  $('liveState').textContent=planned?'Rozkład pobrany':'Tylko wykonanie';
-  $('liveResult').innerHTML=buildLiveBoard(planned,operations,id,date)+
-   '<div class="alert">Dane operacyjne są bieżące; rozkład i peron sprawdź przed podróżą. Zapisane karty podróży pozostają niezależne.</div>';
+  liveCache={planned,operations,id,date};
+  $('liveState').textContent=planned?'Kierunek ustalony':'Brak rozkładu trasy';
+  renderCachedLive();
  }catch(e){
   $('liveState').textContent='Offline / błąd';
   $('liveResult').innerHTML='<div class="alert">Nie udało się pobrać danych PKP ('+esc(e.message)+'). Zapisane połączenia są dostępne poniżej.</div>';
