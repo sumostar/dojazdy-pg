@@ -146,7 +146,8 @@
     const bus=candidates[candidates.length-1],stgArrival=bus.dep+14;
     const wrz=second?second.arr:first.arr;
     const home=bus.dep-5,pg=wrz+25;
-    if(home<4*60||home>12*60||wrz>15*60)return null;
+    // Serve every same-day Starogard departure, not only the morning commute.
+    if(home<0||home>=1440||wrz>=1440||pg>=1440)return null;
     const direct=!second;
     const t=[clock(home),clock(bus.dep),clock(stgArrival),clock(first.dep),
       second?clock(first.arr):'',second?clock(second.dep):'',clock(wrz),clock(pg),
@@ -160,7 +161,8 @@
     const candidates=buses.filter(b=>b.dep>=end.arr+minimumBusBuffer);
     if(!candidates.length)return null;
     const bus=candidates[0],home=bus.dep+14+3,pg=first.dep-25;
-    if(pg<13*60)return null;
+    // Return services also operate before 13:00; do not omit early/late trains.
+    if(pg<0||home>=1440||end.arr>=1440)return null;
     const t=[clock(pg),clock(first.dep),second?clock(first.arr):'',
       second?clock(second.dep):'',clock(end.arr),clock(bus.dep),clock(home),
       first.number,second?second.number:'',first.platform,second?second.platform:''];
@@ -223,10 +225,34 @@
       if(!old||r.t[0]>old.t[0])unique.set(key,r);
     }
     const data=[...unique.values()].sort((a,b)=>a.d.localeCompare(b.d)||a.t[0].localeCompare(b.t[0]));
-    const morningServices=new Set(data.filter(r=>r.d==='M').map(r=>r.anchors[0])).size;
-    const returnServices=new Set(data.filter(r=>r.d==='R').map(r=>r.anchors[1]||r.anchors[0])).size;
-    return {routes:data,summary:{scheduleTrains:trains.length,starogardOutbound:morningServices,
-      starogardInbound:returnServices,morning:morningServices,returns:returnServices,
+    // List all distinctive Starogard trains, even those lacking a full
+    // door-to-door route because no MZK or onward rail service matches.
+    function stationAnchors(direction,first,second){
+      const byService=new Map();
+      for(const leg of [...first,...second]){
+        const key=leg.from+'|'+leg.to+'|'+(direction==='M'?leg.dep:leg.arr)+'|'+leg.number;
+        const anchor={key,id:leg.id,d:direction,time:direction==='M'?leg.dep:leg.arr,
+          number:leg.number||'',connected:false,from:leg.from,to:leg.to,trainId:leg.trainId};
+        if(!byService.has(leg.trainId))byService.set(leg.trainId,anchor);
+        else if(leg.to===ST.wrz||leg.from===ST.wrz)byService.set(leg.trainId,anchor);
+      }
+      return [...byService.values()];
+    }
+    const outbound=stationAnchors('M',st,sw);
+    const inbound=stationAnchors('R',ts,ws);
+    // Each leg ID includes train ID followed by stop indexes; compare the
+    // full anchor against the generated route's originating station leg.
+    const outboundLegIds=new Set(data.filter(r=>r.d==='M').map(r=>r.anchors[0]));
+    const inboundLegIds=new Set(data.filter(r=>r.d==='R').map(r=>r.anchors[1]||r.anchors[0]));
+    for(const a of outbound)a.connected=outboundLegIds.has(a.id)||data.some(r=>r.d==='M'&&r.anchors[0]?.startsWith(a.trainId+':'));
+    for(const a of inbound)a.connected=inboundLegIds.has(a.id)||data.some(r=>r.d==='R'&&(r.anchors[1]||r.anchors[0])?.startsWith(a.trainId+':'));
+    const trainAnchors=[...outbound,...inbound].sort((a,b)=>a.time-b.time);
+    const morningServices=outbound.filter(a=>a.connected).length;
+    const returnServices=inbound.filter(a=>a.connected).length;
+    return {routes:data,trainAnchors,summary:{scheduleTrains:trains.length,
+      starogardOutbound:outbound.length,starogardInbound:inbound.length,
+      morning:morningServices,returns:returnServices,
+      missingMorning:outbound.length-morningServices,missingReturn:inbound.length-returnServices,
       directMorning:sw.length,directReturn:ws.length}};
   }
   function status(message,state=''){
@@ -242,7 +268,8 @@
       try{
         const cached=JSON.parse(localStorage.getItem(cacheKey)||'null');
         if(cached?.payload){
-          window.autoRoutes=generate(cached.payload,date).routes;
+          const cachedResult=generate(cached.payload,date);
+          window.autoRoutes=cachedResult.routes;window.autoTrainAnchors=cachedResult.trainAnchors;
           status('Zapisany rozkład POLREGIO / REG · '+date+' (dane offline)','cached');
           render();
         }
@@ -259,16 +286,17 @@
       if(seq!==requestSerial)return;
       if(!Array.isArray(payload?.routes))throw new Error('Brak listy tras w odpowiedzi PLK');
       const result=generate(payload,date);
-      window.autoRoutes=result.routes;
+      window.autoRoutes=result.routes;window.autoTrainAnchors=result.trainAnchors;
       try{localStorage.setItem(cacheKey,JSON.stringify({payload,created:new Date().toISOString()}));}catch(e){}
-      status('PKP PLK · POLREGIO / REG · '+date+': '+result.summary.morning+
-        ' kursów do Gdańska, '+result.summary.returns+
-        ' kursów do Starogardu. Wybieramy tylko pierwszy wariant na każdy kurs.','success');
+      status('PKP PLK · POLREGIO / REG · '+date+': '+result.summary.starogardOutbound+
+        ' odjazdów ze Starogardu, '+result.summary.starogardInbound+
+        ' przyjazdów do Starogardu. Pełne podróże: '+result.summary.morning+
+        ' do Gdańska i '+result.summary.returns+' w powrocie.','success');
       render();
     }catch(err){
       if(seq!==requestSerial)return;
       if(window.autoRoutes?.length)status('Nie udało się odświeżyć: używam ostatniego zapisanego rozkładu.','cached');
-      else{window.autoRoutes=null;status('Brak rozkładu online ('+err.message+'). Pokazuję zapisane warianty offline.','error');render()}
+      else{window.autoRoutes=null;window.autoTrainAnchors=null;status('Brak rozkładu online ('+err.message+'). Pokazuję zapisane warianty offline.','error');render()}
     }finally{if(button)button.disabled=false}
   }
   window.PGAuto={generate,load,extractTrains,legs,busTimes,isPolregioRoute};
