@@ -187,7 +187,7 @@
     for(const leg of st){
       // Same physical service continuing to Wrzeszcz is already a direct journey.
       if(sw.some(d=>d.trainId===leg.trainId&&d.dep===leg.dep))continue;
-      const possible=tw.filter(next=>next.dep>=leg.arr+2&&next.dep-leg.arr<=120);
+      const possible=tw.filter(next=>next.dep>=leg.arr+5&&next.dep-leg.arr<=120);
       // Keep all reasonable alternatives, including 5-minute transfers; do not lose
       // other options when the user changes a threshold on the screen.
       possible.sort((a,b)=>a.arr-b.arr);
@@ -206,7 +206,7 @@
     }
     for(const leg of ts){
       if(ws.some(d=>d.trainId===leg.trainId&&d.arr===leg.arr))continue;
-      const possible=wt.filter(prev=>prev.arr<=leg.dep-2&&leg.dep-prev.arr<=120);
+      const possible=wt.filter(prev=>prev.arr<=leg.dep-5&&leg.dep-prev.arr<=120);
       // Latest possible departure from the university, after respecting transfer buffer.
       possible.sort((a,b)=>b.dep-a.dep);
       for(const connection of possible.slice(0,5)){
