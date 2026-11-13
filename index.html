@@ -16,6 +16,34 @@
 .tripMetrics{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:8px 0 12px}.tripMetric{background:#eef3f9;border-radius:9px;padding:9px 7px}.tripMetric strong{font-size:18px;color:#003767;display:block}.tripMetric small{font-size:11px;color:#5f738a}
 .miniJourney{display:flex;width:100%;height:13px;border-radius:5px;overflow:hidden;margin:7px 0 10px}.miniJourney span{height:100%}
 @media(max-width:500px){.tripMetrics{gap:5px}.tripMetric strong{font-size:16px}.tripMetric small{font-size:10px}#timelinePanel{padding:11px}}
+/* Clearly separate outbound and inbound Starogard station services */
+#trainInventory{padding:16px}
+#trainInventory .headline{margin-bottom:15px}
+.anchorSection{border:1px solid #d8e3ef;border-radius:13px;padding:13px;margin:12px 0;background:#fbfcfe}
+.anchorSectionHead{display:flex;align-items:center;justify-content:space-between;gap:9px;margin-bottom:12px}
+.anchorSectionHead b{display:block;font-size:14px;letter-spacing:.35px}
+.anchorSectionHead div div{font-size:12px;color:#5b7087;margin-top:4px;line-height:1.45}
+.anchor-in .anchorSectionHead b{color:#146a69}
+.anchor-out .anchorSectionHead b{color:#003767}
+.anchorCount{flex-shrink:0;background:#eaf1f9;color:#003767;border-radius:30px;padding:6px 10px;font-size:12px;white-space:nowrap}
+.anchor-in .anchorCount{background:#e7f6f3;color:#146a69}
+.anchorList{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:9px}
+.anchorChip{border:1px solid #cdddec;border-left:4px solid #003767;background:#fff;color:#16334e;
+  border-radius:10px;padding:10px 11px;min-width:0;white-space:normal}
+.anchor-in .anchorChip{border-left-color:#148b82}
+.anchorChip.missing{background:#fffaf2;border-color:#eddcc4;border-left-color:#bd7d28}
+.anchorTop{display:flex;justify-content:space-between;gap:6px;align-items:center}
+.anchorTop strong{font-size:23px;color:#18324f;font-variant-numeric:tabular-nums;line-height:1.1}
+.anchorRail{font-size:9px;font-weight:800;letter-spacing:.3px;color:#577187}
+.anchorNumber{font-size:14px;font-weight:800;margin-top:8px;color:#1f3a56}
+.anchorDirection{font-size:11px;color:#526981;line-height:1.35;margin-top:3px}
+.anchorChip .anchorConnection{display:block;margin-top:7px;font-size:10px;font-weight:650;color:#21704b}
+.anchorChip.missing .anchorConnection{color:#a06a29}
+.anchorNote{font-size:11px;color:#60758a;margin:10px 0 0}
+@media(max-width:460px){#trainInventory{padding:11px}.anchorSection{padding:10px}
+  .anchorList{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+  .anchorTop strong{font-size:20px}.anchorChip{padding:9px 7px}
+  .anchorNumber{font-size:12px}.anchorCount{font-size:11px;padding:5px 7px}}
 </style></head><body><header><main><h1>🚆 Dojazdy PG</h1><p>Starogard ↔ Politechnika Gdańska · zapisany rozkład offline</p></main></header><main>
 <section class="panel"><div class="tabs"><button id="morning" class="active">Na uczelnię</button><button id="return">Do domu</button></div>
 <div class="fields"><label><span id="fromLabel">Wyjście z domu — najwcześniej</span><div class="timepick"><button data-step="from:-15">−</button><input id="from" type="time" value="00:00" step="900"><button data-step="from:15">+</button></div><button id="fromNow" class="nowButton" type="button">Od teraz</button></label><label><span id="toLabel">Przyjazd na PG — najpóźniej</span><div class="timepick"><button data-step="to:-15">−</button><input id="to" type="time" value="23:59" step="900"><button data-step="to:15">+</button></div></label><label>Min. przesiadka w Tczewie (min)<input id="rail" type="number" min="0" max="60" value="8"></label><label>Min. PKP–MZK (min)<input id="bus" type="number" min="0" max="60" value="5"></label></div>
@@ -32,7 +60,7 @@
 <button class="primary" id="liveCheck">Sprawdź pociągi PKP</button></div>
 <div class="controls"><label><input id="liveRegional" type="checkbox" checked> Tylko POLREGIO / REG (bilet miesięczny)</label></div>
 <div id="liveResult" aria-live="polite"><div class="muted">Kliknij, aby pobrać pełną tablicę rozkładową oraz dostępne opóźnienia. Karty podróży działają także offline.</div></div>
-</section><div id="count" class="summary"></div><section class="panel" id="trainInventory" hidden><div class="headline"><div><b>Wszystkie pociągi do / ze Starogardu</b><div class="muted">W tym kursy bez kompletnego połączenia z MZK 12</div></div></div><div id="trainInventoryList"></div></section>
+</section><div id="count" class="summary"></div><section class="panel" id="trainInventory" hidden><div class="headline"><div><b>Pociągi regionalne · Starogard Gdański</b><div class="muted">Oba kierunki, osobno. Godziny z rozkładu PKP PLK; zaznaczono kompletne dojazdy z MZK 12.</div></div></div><div id="trainInventoryList"></div></section>
 <section class="panel" id="timelinePanel"><div class="headline"><div><b>Porównanie czasu podróży</b><div class="muted">Wszystkie warianty na jednej osi godzinowej · kliknij wiersz, aby przejść do szczegółów</div></div><button id="timelineToggle" aria-pressed="true">Ukryj</button></div><div id="timeline"></div></section>
 <div id="results"></div>
 <section class="panel" id="mzkPanel"><details><summary>MZK 12 · pełny rozkład z tablic przystankowych</summary>
@@ -252,16 +280,30 @@ function renderTrainInventory(){
  const panel=$('trainInventory'),list=$('trainInventoryList');
  const data=window.autoTrainAnchors;
  if(!Array.isArray(data)){panel.hidden=true;list.innerHTML='';return}
- const relevant=data.filter(a=>a.d===mode).sort((a,b)=>a.time-b.time);
- const connected=relevant.filter(a=>a.connected).length;
  panel.hidden=false;
- const direction=mode==='M'?'Odjazdy ze Starogardu w stronę Tczewa / Gdańska':'Przyjazdy do Starogardu z Tczewa / Gdańska';
- list.innerHTML='<div class="anchorSummary"><b>'+esc(direction)+'</b>: '+relevant.length+' kursów POLREGIO / REG. '+
- connected+' z kompletnym dojazdem dom–PG lub PG–dom · '+(relevant.length-connected)+
- ' bez pełnego dopasowania. Te ostatnie nie znikają z zestawienia kolejowego.</div>'+
- '<div class="anchorList">'+relevant.map(a=>'<span class="anchorChip '+(a.connected?'':'missing')+'" title="'+esc(a.connected?'Pełna podróż z MZK jest dostępna':'Nie udało się dopasować kompletnej podróży z MZK i koleją')+'">'+
- (a.connected?'✓ ':'· ')+esc(chartTime(a.time))+' · '+esc(a.number||'REG')+
- '<small>'+(a.connected?'Pełne połączenie':'Brak kompletnej trasy')+'</small></span>').join('')+'</div>';
+ const sections=[
+  {d:'M',heading:'ZE STAROGARDU',path:'Starogard Gdański → Tczew / Gdańsk Wrzeszcz',type:'out'},
+  {d:'R',heading:'DO STAROGARDU',path:'Tczew / Gdańsk Wrzeszcz → Starogard Gdański',type:'in'}
+ ];
+ const station=id=>id==='7534'?'Gdańsk Wrzeszcz':id==='7112'?'Tczew':'Starogard Gdański';
+ list.innerHTML=sections.map(sec=>{
+  const trains=data.filter(a=>a.d===sec.d).sort((a,b)=>a.time-b.time);
+  const connected=trains.filter(a=>a.connected).length;
+  return '<section class="anchorSection anchor-'+sec.type+'">'+
+   '<div class="anchorSectionHead"><div><b>'+sec.heading+'</b><div>'+sec.path+'</div></div>'+
+   '<strong class="anchorCount">'+trains.length+' pociągów</strong></div>'+
+   '<div class="anchorList">'+(trains.length?trains.map(a=>{
+    const direction=a.d==='M'?'Starogard → '+station(a.to):station(a.from)+' → Starogard';
+    return '<div class="anchorChip '+(a.connected?'':'missing')+'">'+
+     '<div class="anchorTop"><strong>'+esc(chartTime(a.time))+'</strong><span class="anchorRail">'+(sec.d==='M'?'ODJAZD':'PRZYJAZD')+'</span></div>'+
+     '<div class="anchorNumber">REG '+esc(a.number||'nr niepodany')+'</div>'+
+     '<div class="anchorDirection">'+esc(direction)+'</div>'+
+     '<small class="anchorConnection">'+(a.connected?'✓ Pełna podróż':'· Bez pełnej trasy z MZK')+'</small>'+
+     '</div>';
+   }).join(''):'<div class="muted">Brak rozkładowych kursów regionalnych dla tego kierunku.</div>')+'</div>'+
+   '<p class="anchorNote">'+connected+' z '+trains.length+' pociągów ma dopasowaną kompletną podróż z MZK 12.</p>'+
+   '</section>';
+ }).join('');
 }
 function render(){
  const f=appliedFilters;
