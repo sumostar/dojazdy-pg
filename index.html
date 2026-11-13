@@ -452,7 +452,7 @@ function buildLiveBoard(schedule,operations,id,date){
    const rawPlan=arriving?(stop.plannedArrival??stop.plannedArrivalTime):(stop.plannedDeparture??stop.plannedDepartureTime);
    const t=timetableTime(rawPlan);
    if(!t)continue;
-   if(typeof rawPlan==='string'&&/^\\d{4}-\\d{2}-\\d{2}T/.test(rawPlan)&&rawPlan.slice(0,10)!==date)continue;
+   if(typeof rawPlan==='string'&&/^\d{4}-\d{2}-\d{2}T/.test(rawPlan)&&rawPlan.slice(0,10)!==date)continue;
    const nr=String((arriving?stop.arrivalTrainNumber:stop.departureTrainNumber)||trainNr).trim();
    const matching=known.filter(r=>r.t===t&&(!nr||!r.nr||r.nr===nr));
    if(matching.length!==1)continue;
