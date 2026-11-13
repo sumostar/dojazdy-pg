@@ -49,7 +49,7 @@
 <div id="statsMessage" class="muted"></div><div id="statsResult"></div>
 <p class="muted">Dane lokalne i niepełna próba, nie oficjalna statystyka PLK. Starsze pomiary ze źle działającego filtra daty nie są przenoszone.</p>
 </section>
-<footer>5 min rano dom–Andersa · 3 min od Andersa do domu · 25 min PG–Wrzeszcz · domyślnie 8 min w Tczewie, 5 min MZK–PKP. Godziny z roboczej siatki listopad 2026; wyświetlane są tylko pełne warianty; pozostałe dane wymagają weryfikacji. Aktualne dane PKP PLK dostępne w tablicy odjazdów.</footer></main>
+<footer>5 min rano dom–Andersa · 3 min od Andersa do domu · 25 min PG–Wrzeszcz · domyślnie 8 min w Tczewie, 5 min MZK–PKP. Połączenia tworzone na podstawie planowego rozkładu PKP PLK; bez internetu dostępne zapisane warianty. Nie każdy pociąg ma pasujący autobus MZK. Aktualne dane PKP PLK dostępne w tablicy odjazdów.</footer></main>
 <dialog id="dialog"><h3>Edytuj godziny i perony</h3><div id="edit"></div><div class="actions"><button class="primary" id="save">Zapisz</button><button id="cancel">Anuluj</button></div></dialog>
 <script>
 const raw=[
@@ -673,4 +673,4 @@ function renderMzk(){
 }
 $('mzkDirection').onchange=renderMzk;$('mzkDay').onchange=renderMzk;renderMzk();
 switchTo('M');
-</script><script src="auto-planner.js?v=4" defer></script></body></html>
+</script><script src="auto-planner.js?v=5" defer></script></body></html>
