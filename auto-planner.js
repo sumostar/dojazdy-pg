@@ -295,12 +295,12 @@
       render();
     }catch(err){
       if(seq!==requestSerial)return;
-      if(window.autoRoutes?.length)status('Nie udało się odświeżyć: używam ostatniego zapisanego rozkładu.','cached');
+      if(Array.isArray(window.autoRoutes))status('Nie udało się odświeżyć: używam ostatniego zapisanego rozkładu.','cached');
       else{window.autoRoutes=null;window.autoTrainAnchors=null;status('Brak rozkładu online ('+err.message+'). Pokazuję zapisane warianty offline.','error');render()}
     }finally{if(button)button.disabled=false}
   }
   window.PGAuto={generate,load,extractTrains,legs,busTimes,isPolregioRoute};
   document.getElementById('autoRefresh')?.addEventListener('click',()=>load(true));
-  document.getElementById('travelDate')?.addEventListener('change',()=>{window.autoRoutes=null;render();load()});
+  document.getElementById('travelDate')?.addEventListener('change',()=>{window.autoRoutes=null;window.autoTrainAnchors=null;render();load()});
   load();
 })();
