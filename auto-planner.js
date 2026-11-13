@@ -103,9 +103,9 @@
       .map(x=>({dep:minutes(x.slice(0,5)),tag:x.slice(5)}))
       .filter(x=>x.dep!==null);
   }
-  function morningCandidate(first,second,buses,idx){
+  function morningCandidate(first,second,buses,minimumBusBuffer=2){
     // Always anchor a morning journey to the limited Starogard departures.
-    const candidates=buses.filter(b=>b.dep+14<=first.dep-2);
+    const candidates=buses.filter(b=>b.dep+14<=first.dep-minimumBusBuffer);
     if(!candidates.length)return null;
     const bus=candidates[candidates.length-1],stgArrival=bus.dep+14;
     const wrz=second?second.arr:first.arr;
@@ -119,9 +119,9 @@
       anchors:[first.id,second?.id||''],source:'PKP PLK',
       uncertainBus:bus.tag==='s',busBuffer:first.dep-stgArrival};
   }
-  function returnCandidate(first,second,buses){
+  function returnCandidate(first,second,buses,minimumBusBuffer=2){
     const end=second||first;
-    const candidates=buses.filter(b=>b.dep>=end.arr+2);
+    const candidates=buses.filter(b=>b.dep>=end.arr+minimumBusBuffer);
     if(!candidates.length)return null;
     const bus=candidates[0],home=bus.dep+14+3,pg=first.dep-25;
     if(pg<13*60)return null;
@@ -143,8 +143,10 @@
     const outboundBus=busTimes('to',date),returnBus=busTimes('back',date);
     // Generate all physically feasible transfers; time and risk settings are presentation filters.
     for(const direct of sw){
-      const r=morningCandidate(direct,null,outboundBus);
-      if(r)going.push(r);
+      for(const margin of [2,5]){
+        const r=morningCandidate(direct,null,outboundBus,margin);
+        if(r)going.push(r);
+      }
     }
     for(const leg of st){
       // Same physical service continuing to Wrzeszcz is already a direct journey.
@@ -154,13 +156,17 @@
       // other options when the user changes a threshold on the screen.
       possible.sort((a,b)=>a.arr-b.arr);
       for(const connection of possible.slice(0,5)){
-        const r=morningCandidate(leg,connection,outboundBus);
-        if(r)going.push(r);
+        for(const margin of [2,5]){
+          const r=morningCandidate(leg,connection,outboundBus,margin);
+          if(r)going.push(r);
+        }
       }
     }
     for(const direct of ws){
-      const r=returnCandidate(direct,null,returnBus);
-      if(r)back.push(r);
+      for(const margin of [2,5]){
+        const r=returnCandidate(direct,null,returnBus,margin);
+        if(r)back.push(r);
+      }
     }
     for(const leg of ts){
       if(ws.some(d=>d.trainId===leg.trainId&&d.arr===leg.arr))continue;
@@ -168,13 +174,15 @@
       // Latest possible departure from the university, after respecting transfer buffer.
       possible.sort((a,b)=>b.dep-a.dep);
       for(const connection of possible.slice(0,5)){
-        const r=returnCandidate(connection,leg,returnBus);
-        if(r)back.push(r);
+        for(const margin of [2,5]){
+          const r=returnCandidate(connection,leg,returnBus,margin);
+          if(r)back.push(r);
+        }
       }
     }
     const unique=new Map();
     for(const r of [...going,...back]){
-      const key=r.d+'|'+r.t[1]+'|'+r.t[3]+'|'+(r.d==='M'?r.t[6]:r.t[4]);
+      const key=r.d+'|'+r.t[1]+'|'+r.t[3]+'|'+(r.d==='M'?r.t[6]:r.t[4])+'|'+(r.d==='R'?r.t[5]:'');
       const old=unique.get(key);
       if(!old||r.t[0]>old.t[0])unique.set(key,r);
     }
