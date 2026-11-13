@@ -44,6 +44,35 @@
   .anchorList{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
   .anchorTop strong{font-size:20px}.anchorChip{padding:9px 7px}
   .anchorNumber{font-size:12px}.anchorCount{font-size:11px;padding:5px 7px}}
+/* Readable mobile Gantt: four-hour departure groups instead of a 24-hour axis */
+#timelinePanel .headline{gap:8px}
+#timelinePanel .headline b{font-size:17px}
+#timelinePanel #timelineToggle{flex-shrink:0}
+.journeyChart{overflow:visible}
+.journeyGrid{min-width:0}
+.journeyWindow{margin:13px 0 20px}
+.journeyWindowTitle{font-weight:800;font-size:12px;background:#eef4fa;color:#244866;
+  padding:9px 12px;border-radius:8px;margin-bottom:10px}
+.journeyAxis,.journeyLine{display:grid;grid-template-columns:100px minmax(0,1fr) 79px;gap:8px}
+.journeyAxis{margin:0 0 6px}
+.journeyTrack{min-width:0}
+.journeyLine{padding:8px 0;min-height:65px}
+.journeyLabel{min-width:0}
+.journeyLabel small.journeyTrain{font-size:10px;font-weight:600;color:#003767;
+ line-height:1.3;white-space:normal;overflow-wrap:anywhere;margin-top:3px}
+.journeyDuration{font-size:14px;line-height:1.3}
+.journeyDuration small{white-space:normal}
+.axisTick{font-size:10px}
+@media(max-width:520px){
+ .journeyAxis,.journeyLine{grid-template-columns:76px minmax(0,1fr) 65px;gap:6px}
+ .journeyAxis{font-size:10px}
+ .journeyLabel strong{font-size:15px}
+ .journeyDuration{font-size:12px}
+ .journeyDuration small{font-size:9px}
+ .journeyWindowTitle{font-size:11px;padding:8px}
+ .axisTick{font-size:9px}
+ .journeyTrain{font-size:9px}
+}
 </style></head><body><header><main><h1>🚆 Dojazdy PG</h1><p>Starogard ↔ Politechnika Gdańska · zapisany rozkład offline</p></main></header><main>
 <section class="panel"><div class="tabs"><button id="morning" class="active">Na uczelnię</button><button id="return">Do domu</button></div>
 <div class="fields"><label><span id="fromLabel">Wyjście z domu — najwcześniej</span><div class="timepick"><button data-step="from:-15">−</button><input id="from" type="time" value="00:00" step="900"><button data-step="from:15">+</button></div><button id="fromNow" class="nowButton" type="button">Od teraz</button></label><label><span id="toLabel">Przyjazd na PG — najpóźniej</span><div class="timepick"><button data-step="to:-15">−</button><input id="to" type="time" value="23:59" step="900"><button data-step="to:15">+</button></div></label><label>Min. przesiadka w Tczewie (min)<input id="rail" type="number" min="0" max="60" value="8"></label><label>Min. PKP–MZK (min)<input id="bus" type="number" min="0" max="60" value="5"></label></div>
@@ -61,7 +90,7 @@
 <div class="controls"><label><input id="liveRegional" type="checkbox" checked> Tylko POLREGIO / REG (bilet miesięczny)</label></div>
 <div id="liveResult" aria-live="polite"><div class="muted">Kliknij, aby pobrać pełną tablicę rozkładową oraz dostępne opóźnienia. Karty podróży działają także offline.</div></div>
 </section><div id="count" class="summary"></div><section class="panel" id="trainInventory" hidden><div class="headline"><div><b>Pociągi regionalne · Starogard Gdański</b><div class="muted">Oba kierunki, osobno. Godziny z rozkładu PKP PLK; zaznaczono kompletne dojazdy z MZK 12.</div></div></div><div id="trainInventoryList"></div></section>
-<section class="panel" id="timelinePanel"><div class="headline"><div><b>Porównanie czasu podróży</b><div class="muted">Wszystkie warianty na jednej osi godzinowej · kliknij wiersz, aby przejść do szczegółów</div></div><button id="timelineToggle" aria-pressed="true">Ukryj</button></div><div id="timeline"></div></section>
+<section class="panel" id="timelinePanel"><div class="headline"><div><b id="timelineTitle">Podróże ze Starogardu → Gdańsk PG</b><div class="muted">Harmonogram w czytelnych przedziałach godzinowych; kliknij wiersz, aby zobaczyć szczegóły</div></div><button id="timelineToggle" aria-pressed="true">Ukryj</button></div><div id="timeline"></div></section>
 <div id="results"></div>
 <section class="panel" id="mzkPanel"><details><summary>MZK 12 · pełny rozkład z tablic przystankowych</summary>
 <p class="muted">Godziny odjazdu z Lubichowska–Andersa w kierunku PKP oraz z dworca PKP w kierunku domu. Warianty oznaczone „s” tylko w dni nauki szkolnej, „z” kończą na Rynku. Godziny z udostępnionych tablic, bez danych GPS.</p>
@@ -194,29 +223,52 @@ function journeySummary(r){
 }
 function chartTime(n){return String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0')}
 function renderTimeline(list){
+ $('timelineTitle').textContent=mode==='M'?'Podróże: Starogard → PG':'Podróże: PG → Starogard';
  const host=$('timelinePanel'),el=$('timeline');
  host.style.display=list.length?'block':'none';
  if(!list.length)return;
  const data=list.map(r=>({r,i:journeyInfo(r)})).filter(x=>x.i);
  if(!data.length){host.style.display='none';return}
- const minStart=Math.floor(Math.min(...data.map(x=>x.i.start))/30)*30;
- const maxEnd=Math.ceil(Math.max(...data.map(x=>x.i.end))/30)*30;
- const range=Math.max(1,maxEnd-minStart);
- const pct=n=>((n-minStart)/range*100).toFixed(3)+'%';
- const tickStep=range>360?60:30;
- const ticks=[];
- for(let n=minStart;n<=maxEnd;n+=tickStep){
-  ticks.push('<span class="axisTick" style="left:'+pct(n)+'">'+chartTime(n)+'</span>');
+ // Group departures into four-hour windows. Each sub-chart has its own readable
+ // time scale; the all-day 00:00-24:00 axis was too compressed on a phone.
+ const groups=new Map();
+ for(const x of data){
+  const bucket=Math.floor(x.i.start/240)*240;
+  if(!groups.has(bucket))groups.set(bucket,[]);
+  groups.get(bucket).push(x);
  }
- if((maxEnd-minStart)%tickStep)ticks.push('<span class="axisTick" style="left:100%">'+chartTime(maxEnd)+'</span>');
- const rows=data.map(({r,i})=>{
-  const bars=i.segments.map(s=>'<span class="journeyPart '+s.type+'" style="left:'+pct(s.start)+';width:'+((s.end-s.start)/range*100).toFixed(3)+'%" title="'+esc(s.label+': '+chartTime(s.start)+'–'+chartTime(s.end)+' ('+durationText(s.minutes)+')')+'"></span>').join('');
-  return '<button class="journeyLine" data-jump="'+esc(r.id)+'" aria-label="Pokaż podróż '+chartTime(i.start)+'–'+chartTime(i.end)+'"><span class="journeyLabel"><strong>'+chartTime(i.start)+'</strong><small>→ '+chartTime(i.end)+'</small></span><span class="journeyTrack">'+bars+'</span><span class="journeyDuration">'+durationText(i.total)+'<small>'+i.totals.wait+' min czekania</small></span></button>';
- }).join('');
- const legend=[['walk','Pieszo'],['bus','Autobus 12'],['train','Pociąg'],['wait','Czekanie / przesiadka']]
- .map(([type,title])=>'<span><i class="journeyDot" style="background:var(--'+type+')"></i>'+title+'</span>').join('');
- el.innerHTML='<div class="journeyChart"><div class="journeyGrid"><div class="journeyAxis"><span>Wyjście</span><div class="journeyTrack journeyAxisTrack">'+ticks.join('')+'</div><span style="text-align:right">Łącznie</span></div>'+rows+'</div></div><div class="journeyLegend">'+legend+'</div><p class="muted">Wspólna skala czasu dla wszystkich wariantów. Czasy szacunkowe, nie uwzględniają opóźnień na żywo.</p>';
- el.onclick=e=>{const btn=e.target.closest('[data-jump]');if(!btn)return;const target=document.getElementById('route-'+btn.dataset.jump);target?.scrollIntoView({behavior:'smooth',block:'start'})};
+ const legend=[['walk','Pieszo'],['bus','MZK 12'],['train','Pociąg'],['wait','Czekanie / przesiadka']]
+ .map(([type,name])=>'<span><i class="journeyDot" style="background:var(--'+type+')"></i>'+name+'</span>').join('');
+ el.innerHTML=[...groups.entries()].sort((a,b)=>a[0]-b[0]).map(([bucket,items])=>{
+  const start=Math.floor(Math.min(...items.map(x=>x.i.start))/60)*60;
+  const end=Math.ceil(Math.max(...items.map(x=>x.i.end))/60)*60;
+  const span=Math.max(60,end-start);
+  const pct=n=>((n-start)/span*100).toFixed(3)+'%';
+  const tickStep=span>240?120:60;
+  const ticks=[];
+  for(let t=start;t<=end;t+=tickStep){
+   ticks.push('<span class="axisTick" style="left:'+pct(t)+'">'+chartTime(t)+'</span>');
+  }
+  if((end-start)%tickStep!==0)ticks.push('<span class="axisTick" style="left:100%">'+chartTime(end)+'</span>');
+  const rows=items.map(({r,i})=>{
+   const segments=i.segments.map(s=>'<span class="journeyPart '+s.type+'" style="left:'+pct(s.start)+';width:'+((s.end-s.start)/span*100).toFixed(3)+'%" title="'+esc(s.label+': '+chartTime(s.start)+'–'+chartTime(s.end)+' ('+durationText(s.minutes)+')')+'"></span>').join('');
+   const firstTrain=r.d==='M'?r.t[8]:r.t[7],secondTrain=r.d==='M'?r.t[9]:r.t[8];
+   const trainLabel=[firstTrain,secondTrain].filter(x=>x&&x.trim()).join(' + ');
+   return '<button class="journeyLine" data-jump="'+esc(r.id)+'" aria-label="Przejdź do szczegółów podróży '+chartTime(i.start)+'–'+chartTime(i.end)+'">'+
+    '<span class="journeyLabel"><strong>'+chartTime(i.start)+'</strong><small>→ '+chartTime(i.end)+'</small>'+
+    (trainLabel?'<small class="journeyTrain">REG '+esc(trainLabel)+'</small>':'')+'</span>'+
+    '<span class="journeyTrack">'+segments+'</span>'+
+    '<span class="journeyDuration">'+durationText(i.total)+'<small>'+i.totals.wait+' min postoju</small></span></button>';
+  }).join('');
+  const title=chartTime(bucket)+'–'+chartTime(Math.min(1439,bucket+239));
+  return '<section class="journeyWindow"><div class="journeyWindowTitle">Odjazdy '+title+'</div>'+
+   '<div class="journeyAxis"><span>Start</span><div class="journeyTrack journeyAxisTrack">'+ticks.join('')+'</div>'+
+   '<span style="text-align:right">Podróż</span></div>'+rows+'</section>';
+ }).join('')+
+ '<div class="journeyLegend">'+legend+'</div>'+
+ '<p class="muted">Każda grupa ma własną oś czasu. Kliknij wiersz, aby otworzyć szczegóły podróży. Godziny planowe, bez bieżących opóźnień.</p>';
+ el.onclick=e=>{const b=e.target.closest('[data-jump]');if(!b)return;
+  document.getElementById('route-'+b.dataset.jump)?.scrollIntoView({behavior:'smooth',block:'start'})};
 }
 $('timelineToggle').onclick=()=>{const hidden=$('timeline').hidden;$('timeline').hidden=!hidden;$('timelineToggle').textContent=hidden?'Ukryj':'Pokaż';$('timelineToggle').setAttribute('aria-pressed',String(hidden))};
 function card(r){
