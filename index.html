@@ -18,7 +18,7 @@
 @media(max-width:500px){.tripMetrics{gap:5px}.tripMetric strong{font-size:16px}.tripMetric small{font-size:10px}#timelinePanel{padding:11px}}
 </style></head><body><header><main><h1>🚆 Dojazdy PG</h1><p>Starogard ↔ Politechnika Gdańska · zapisany rozkład offline</p></main></header><main>
 <section class="panel"><div class="tabs"><button id="morning" class="active">Na uczelnię</button><button id="return">Do domu</button></div>
-<div class="fields"><label>Wyjście nie wcześniej niż<div class="timepick"><button data-step="from:-15">−</button><input id="from" type="time" value="04:00" step="900"><button data-step="from:15">+</button></div></label><label>Dotarcie najpóźniej<div class="timepick"><button data-step="to:-15">−</button><input id="to" type="time" value="12:00" step="900"><button data-step="to:15">+</button></div></label><label>Min. przesiadka w Tczewie (min)<input id="rail" type="number" min="0" max="60" value="8"></label><label>Min. PKP–MZK (min)<input id="bus" type="number" min="0" max="60" value="5"></label></div>
+<div class="fields"><label><span id="fromLabel">Wyjście z domu — najwcześniej</span><div class="timepick"><button data-step="from:-15">−</button><input id="from" type="time" value="04:00" step="900"><button data-step="from:15">+</button></div></label><label><span id="toLabel">Przyjazd na PG — najpóźniej</span><div class="timepick"><button data-step="to:-15">−</button><input id="to" type="time" value="12:00" step="900"><button data-step="to:15">+</button></div></label><label>Min. przesiadka w Tczewie (min)<input id="rail" type="number" min="0" max="60" value="8"></label><label>Min. PKP–MZK (min)<input id="bus" type="number" min="0" max="60" value="5"></label></div>
 <div class="controls"><label><input id="risky" type="checkbox" checked> Pokaż także krótkie przesiadki (np. 5 minut w Tczewie)</label></div>
 <div class="controls"><button class="primary" id="applyFilters">Zastosuj filtry</button><button id="reset">Reset</button><button id="all">Wszystkie pełne</button></div>
 <div id="filterHint" class="muted" aria-live="polite">Ustaw godziny i marginesy, następnie wybierz „Zastosuj filtry”.</div><div class="controls"><button class="primary" id="autoRefresh">Odśwież połączenia PKP PLK</button></div><div id="autoStatus" class="muted" role="status" aria-live="polite">Uruchamianie automatycznego planowania…</div><label class="dateLabel">Data podróży <input id="travelDate" type="date"></label></section>
@@ -245,6 +245,8 @@ function switchTo(d){
  mode=d;all=false;
  $('morning').classList.toggle('active',d==='M');
  $('return').classList.toggle('active',d==='R');
+ $('fromLabel').textContent=d==='M'?'Wyjście z domu — najwcześniej':'Wyjście z PG — najwcześniej';
+ $('toLabel').textContent=d==='M'?'Przyjazd na PG — najpóźniej':'Przyjazd do domu — najpóźniej';
  $('from').value=d==='M'?'04:00':'13:00';
  $('to').value=d==='M'?'12:00':'23:59';
  appliedFilters=readFilterInputs();
