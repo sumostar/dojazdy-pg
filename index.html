@@ -237,10 +237,15 @@ function collectStats(payload,day){
     if(plannedDay!==day)continue;
     const time=timetableTime(planned);
     if(!time)continue;
-    const number=String(s[kind+'TrainNumber']||trainNr||'').trim();
-    if(!number)continue; // Can't safely identify a repeated service.
-    const key=[plannedDay,kind,number,time].join('|');
-    const observation={key,day:plannedDay,kind,number,time,delay:Number(d),confirmed:true};
+    // PLK operations can omit the passenger-facing train number but supply
+    // scheduleId and orderId (the actual operational identity).
+    const publicNr=String(s[kind+'TrainNumber']||trainNr||'').trim();
+    const uniqueId=(train.scheduleId!=null&&train.orderId!=null)
+      ? 'id:'+train.scheduleId+'/'+train.orderId
+      : publicNr?'nr:'+publicNr:null;
+    if(!uniqueId)continue;
+    const key=[plannedDay,kind,uniqueId,time].join('|');
+    const observation={key,day:plannedDay,kind,number:publicNr||uniqueId,time,delay:Number(d),confirmed:true};
     const prev=records.get(key);
     // Different technical records may disagree. Keep the largest delay as a
     // conservative snapshot and mark the sample as observational.
