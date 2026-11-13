@@ -1,5 +1,21 @@
 <!doctype html><html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#003767"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon.svg" type="image/svg+xml"><title>Dojazdy PG</title><style>
 :root{font:15px system-ui,Arial;color:#15283e;background:#f3f6fb}*{box-sizing:border-box}body{margin:0}header{padding:21px 16px;background:#003767;color:white}header h1{margin:0;font-size:24px}header p{margin:5px 0 0;font-size:13px;color:#c9e2fa}main{max-width:720px;margin:auto;padding:12px 12px 50px}.panel,.trip{background:white;border:1px solid #d9e3ef;border-radius:16px;padding:14px;margin:0 0 12px}.tabs{display:flex;gap:8px}.tabs button{flex:1}.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:15px 0}.fields label{font-size:12px;font-weight:700;color:#53677d}input,select{display:block;width:100%;padding:10px;font:inherit;margin-top:5px;border:1px solid #b7c9dc;border-radius:9px;background:white;color:#142a46}input[type=checkbox]{display:inline;width:auto}button{padding:10px 12px;border:1px solid #9eb2c9;border-radius:10px;background:white;color:#003767;font:inherit;font-weight:700;cursor:pointer}button.active,button.primary{background:#003767;color:white;border-color:#003767}.controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:12px 0}.controls label{font-size:13px}.headline{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}.name{color:#53677d;font-size:12px;font-weight:700}.badge{font-size:11px;font-weight:700;padding:5px 8px;border-radius:14px;background:#e4f2e9;color:#226442;white-space:nowrap}.badge.warn{background:#fff0d9;color:#8c4e0d}.hero{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:13px 0}.hero>div:last-child{text-align:right}.hero strong{font-size:30px;font-variant-numeric:tabular-nums}.muted{font-size:12px;color:#64768b}.divider{height:1px;background:#e5ebf2;margin:12px 0}.step{display:grid;grid-template-columns:92px 1fr;gap:12px;padding:8px 0;border-bottom:1px solid #eff3f8}.step:last-child{border:0}.hour{text-align:center;font-variant-numeric:tabular-nums;font-size:14px;font-weight:650;padding:5px}.depart .hour{background:#eaf1f9;color:#003767;border-radius:9px;padding:8px 2px}.depart .hour strong{display:block;font-size:25px;line-height:1.15}.depart .hour small{display:block;font-size:9px;letter-spacing:.5px}.place{font-weight:650;padding-top:3px}.depart .place{font-weight:800}.detail{font-size:13px;margin-top:4px;color:#526780}.platform{font-size:14px;font-weight:850;color:#003767;margin-top:5px}.unknown{color:#a05f15}.chips{margin:12px 0 4px;display:flex;gap:6px;flex-wrap:wrap}.chips span{background:#eef3f9;border-radius:12px;padding:5px 8px;font-size:11px}.alert{background:#fff4e3;padding:10px;border-radius:10px;font-size:13px;margin:8px 0}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.actions button{font-size:12px;padding:8px}.summary{font-weight:750;margin:12px 2px}details summary{font-weight:750;cursor:pointer}textarea{width:100%;min-height:150px}dialog{border:0;border-radius:14px;width:min(95vw,600px);max-height:85vh;overflow:auto}dialog::backdrop{background:#0008}.edit{display:grid;grid-template-columns:90px 1fr 100px;gap:6px;align-items:center;margin:7px 0}.edit label{font-size:12px}.edit input{padding:6px;min-width:0}footer{font-size:12px;color:#64768b;padding:12px}.statGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:10px 0}.statTile{background:#eef3f9;border-radius:10px;padding:10px 7px;text-align:center}.statTile strong{font-size:22px;color:#003767;display:block}.statTile small{font-size:11px;color:#54677d}.statMeta{font-size:12px;color:#64768b}.statSection{border-top:1px solid #dce7f0;padding:12px 0}#statsPanel .controls button{font-size:12px}#statsMessage{margin:8px 0}#stationPick{min-width:165px}#liveResult{max-height:400px;overflow:auto}.liveRow{border-top:1px solid #e4eaf2;padding:10px 0;display:grid;grid-template-columns:78px 1fr;gap:12px}.liveRow strong{font-size:22px;color:#003767;font-variant-numeric:tabular-nums}.liveSub{font-size:12px;color:#54677d;margin-top:4px}.liveDelay{font-weight:800;color:#a34e0f}.liveGood{font-weight:800;color:#156e47}.mzkGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:6px;margin:12px 0}.mzkTime{background:#eef3f9;border-radius:9px;padding:10px 4px;text-align:center;color:#003767;font-weight:800;font-variant-numeric:tabular-nums}.mzkTime small{font-size:9px;color:#826314}.timepick{display:flex;gap:5px;align-items:center;margin-top:5px}.timepick input{min-width:0;margin:0;text-align:center}.timepick button{padding:8px;min-width:38px;font-size:20px}.dateLabel{display:block;font-size:12px;font-weight:700;margin-top:9px;color:#53677d}.dateLabel input{max-width:240px}
+
+/* Shared-axis journey timeline; no chart library required */
+:root{--walk:#8799ac;--bus:#18866f;--train:#003767;--wait:#d49b46}
+#timelinePanel{padding:16px}#timelinePanel .headline{align-items:center}.journeyChart{overflow-x:auto;overscroll-behavior-x:contain;padding-bottom:5px}
+.journeyGrid{min-width:580px;margin-top:12px}.journeyAxis,.journeyLine{display:grid;grid-template-columns:106px minmax(0,1fr) 80px;gap:9px;align-items:center}
+.journeyAxis{font-size:11px;color:#5a6d82;margin-bottom:9px}.journeyTrack{position:relative;height:32px;background:repeating-linear-gradient(to right,#edf2f7 0,#edf2f7 1px,transparent 1px,transparent 12.5%);border-radius:8px}
+.journeyAxisTrack{height:25px;background:transparent}.axisTick{position:absolute;top:4px;transform:translateX(-50%);font-size:10px;white-space:nowrap}.axisTick:first-child{transform:none}.axisTick:last-child{transform:translateX(-100%)}
+.journeyLine{width:100%;border:0;background:transparent;border-bottom:1px solid #e8edf4;padding:8px 0;cursor:pointer;text-align:left;color:#15283e;font:inherit}
+.journeyLine:hover,.journeyLine:focus-visible{background:#f1f7ff;outline:2px solid #a2bbd7;outline-offset:-2px}.journeyLabel strong{font-size:15px;display:block;font-variant-numeric:tabular-nums}.journeyLabel small{display:block;font-size:11px;color:#697c90}
+.journeyDuration{text-align:right;font-size:16px;font-weight:800;white-space:nowrap;font-variant-numeric:tabular-nums}.journeyDuration small{display:block;font-weight:500;font-size:10px;color:#687b8d}
+.journeyPart{position:absolute;height:22px;top:5px;min-width:1px}.journeyPart.walk{background:var(--walk)}.journeyPart.bus{background:var(--bus)}.journeyPart.train{background:var(--train)}.journeyPart.wait{background:var(--wait)}
+.journeyPart:first-child{border-radius:6px 0 0 6px}.journeyPart:last-child{border-radius:0 6px 6px 0}
+.journeyLegend{display:flex;gap:10px;flex-wrap:wrap;padding:10px 2px 0;color:#53687c;font-size:12px}.journeyDot{width:11px;height:11px;display:inline-block;border-radius:3px;margin-right:4px;vertical-align:-1px}
+.tripMetrics{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:8px 0 12px}.tripMetric{background:#eef3f9;border-radius:9px;padding:9px 7px}.tripMetric strong{font-size:18px;color:#003767;display:block}.tripMetric small{font-size:11px;color:#5f738a}
+.miniJourney{display:flex;width:100%;height:13px;border-radius:5px;overflow:hidden;margin:7px 0 10px}.miniJourney span{height:100%}
+@media(max-width:500px){.tripMetrics{gap:5px}.tripMetric strong{font-size:16px}.tripMetric small{font-size:10px}#timelinePanel{padding:11px}}
 </style></head><body><header><main><h1>🚆 Dojazdy PG</h1><p>Starogard ↔ Politechnika Gdańska · zapisany rozkład offline</p></main></header><main>
 <section class="panel"><div class="tabs"><button id="morning" class="active">Na uczelnię</button><button id="return">Do domu</button></div>
 <div class="fields"><label>Wyjście nie wcześniej niż<div class="timepick"><button data-step="from:-15">−</button><input id="from" type="time" value="04:00" step="900"><button data-step="from:15">+</button></div></label><label>Dotarcie najpóźniej<div class="timepick"><button data-step="to:-15">−</button><input id="to" type="time" value="12:00" step="900"><button data-step="to:15">+</button></div></label><label>Min. przesiadka w Tczewie (min)<input id="rail" type="number" min="0" max="60" value="8"></label><label>Min. PKP–MZK (min)<input id="bus" type="number" min="0" max="60" value="5"></label></div>
@@ -9,7 +25,9 @@
 <div class="headline"><div><b>PKP PLK · dane na żywo</b><div class="muted">Pobierane na żądanie przez bezpieczny Cloudflare Worker</div></div><span id="liveState" class="badge">Nie sprawdzono</span></div>
 <div class="controls"><label>Stacja <select id="stationPick"><option value="8607">Starogard Gdański</option><option value="7112">Tczew</option><option value="7534">Gdańsk Wrzeszcz</option></select></label><button class="primary" id="liveCheck">Sprawdź odjazdy PKP</button></div>
 <div id="liveResult" aria-live="polite"><div class="muted">Kliknij, aby pobrać pełną tablicę rozkładową oraz dostępne opóźnienia. Karty podróży działają także offline.</div></div>
-</section><div id="count" class="summary"></div><div id="results"></div>
+</section><div id="count" class="summary"></div>
+<section class="panel" id="timelinePanel"><div class="headline"><div><b>Porównanie czasu podróży</b><div class="muted">Wszystkie warianty na jednej osi godzinowej · kliknij wiersz, aby przejść do szczegółów</div></div><button id="timelineToggle" aria-pressed="true">Ukryj</button></div><div id="timeline"></div></section>
+<div id="results"></div>
 <section class="panel" id="mzkPanel"><details><summary>MZK 12 · pełny rozkład z tablic przystankowych</summary>
 <p class="muted">Godziny odjazdu z Lubichowska–Andersa w kierunku PKP oraz z dworca PKP w kierunku domu. Warianty oznaczone „s” tylko w dni nauki szkolnej, „z” kończą na Rynku. Godziny z udostępnionych tablic, bez danych GPS.</p>
 <div class="controls"><label>Kierunek <select id="mzkDirection"><option value="to">Andersa → PKP</option><option value="back">PKP → Andersa</option></select></label>
@@ -71,18 +89,107 @@ function stages(r){
 }
 function gaps(r){const a=r.t;if(r.d==='M')return {rail:a[4]&&a[5]?min(a[5])-min(a[4]):null,bus:a[2]&&a[3]?min(a[3])-min(a[2]):null};
  return {rail:a[2]&&a[3]?min(a[3])-min(a[2]):null,bus:a[4]&&a[5]?min(a[5])-min(a[4]):null}}
+function durationText(n){
+ if(n===null||!Number.isFinite(n)||n<0)return '—';
+ const h=Math.floor(n/60),m=n%60;
+ return h?(h+' h'+(m?' '+m+' min':'')):m+' min';
+}
+function journeySegments(r){
+ const a=r.t,parts=[];
+ function add(start,end,type,label){
+  const x=min(start),y=min(end);
+  if(x===null||y===null||y<=x)return;
+  parts.push({start:x,end:y,type,label,minutes:y-x});
+ }
+ if(r.d==='M'){
+  add(a[0],a[1],'walk','Pieszo na MZK');
+  add(a[1],a[2],'bus','MZK 12: Andersa → PKP');
+  add(a[2],a[3],'wait','Oczekiwanie na pociąg w Starogardzie');
+  add(a[3],a[4],'train','Pociąg Starogard → Tczew');
+  add(a[4],a[5],'wait','Przesiadka w Tczewie');
+  add(a[5],a[6],'train','Pociąg Tczew → Wrzeszcz');
+  add(a[6],a[7],'walk','Pieszo na PG');
+ }else{
+  add(a[0],a[1],'walk','Pieszo PG → Wrzeszcz');
+  if(a[2]&&a[3]){
+   add(a[1],a[2],'train','Pociąg Wrzeszcz → Tczew');
+   add(a[2],a[3],'wait','Przesiadka w Tczewie');
+   add(a[3],a[4],'train','Pociąg Tczew → Starogard');
+  }else{
+   add(a[1],a[4],'train','Bezpośredni pociąg do Starogardu');
+  }
+  add(a[4],a[5],'wait','Oczekiwanie na MZK 12');
+  const home=min(a[6]),busDep=min(a[5]);
+  if(home!==null&&busDep!==null&&home-busDep>=3){
+   const arrival=home-3;
+   add(a[5],String(Math.floor(arrival/60)).padStart(2,'0')+':'+String(arrival%60).padStart(2,'0'),'bus','MZK 12: PKP → Andersa');
+   add(String(Math.floor(arrival/60)).padStart(2,'0')+':'+String(arrival%60).padStart(2,'0'),a[6],'walk','Pieszo do domu');
+  }
+ }
+ return parts;
+}
+function journeyInfo(r){
+ const segments=journeySegments(r);
+ const a=min(r.t[0]),b=min(r.d==='M'?r.t[7]:r.t[6]);
+ if(a===null||b===null||b<=a)return null;
+ const totals={walk:0,bus:0,train:0,wait:0};
+ for(const s of segments)totals[s.type]+=s.minutes;
+ return {start:a,end:b,total:b-a,segments,totals,active:totals.walk+totals.bus+totals.train};
+}
+function miniBar(info){
+ if(!info)return '';
+ return '<div class="miniJourney" aria-label="Podział podróży na pieszo, MZK, pociągi i oczekiwanie">'+info.segments.map(p=>
+ '<span title="'+esc(p.label+' · '+durationText(p.minutes))+'" style="width:'+(p.minutes/info.total*100).toFixed(3)+'%;background:var(--'+p.type+')"></span>').join('')+'</div>';
+}
+function journeySummary(r){
+ const i=journeyInfo(r);if(!i)return '';
+ return '<div class="tripMetrics">'+[
+ ['Cała podróż',durationText(i.total)],
+ ['W ruchu',durationText(i.active)],
+ ['Czekanie',durationText(i.totals.wait)]
+ ].map(p=>'<div class="tripMetric"><small>'+p[0]+'</small><strong>'+p[1]+'</strong></div>').join('')+'</div>'+miniBar(i)+
+ '<div class="muted">Założenia: pieszo '+i.totals.walk+' min · MZK '+i.totals.bus+' min · pociągi '+i.totals.train+' min · przesiadki '+i.totals.wait+' min. Godziny planowe.</div>';
+}
+function chartTime(n){return String(Math.floor(n/60)).padStart(2,'0')+':'+String(n%60).padStart(2,'0')}
+function renderTimeline(list){
+ const host=$('timelinePanel'),el=$('timeline');
+ host.style.display=list.length?'block':'none';
+ if(!list.length)return;
+ const data=list.map(r=>({r,i:journeyInfo(r)})).filter(x=>x.i);
+ if(!data.length){host.style.display='none';return}
+ const minStart=Math.floor(Math.min(...data.map(x=>x.i.start))/30)*30;
+ const maxEnd=Math.ceil(Math.max(...data.map(x=>x.i.end))/30)*30;
+ const range=Math.max(1,maxEnd-minStart);
+ const pct=n=>((n-minStart)/range*100).toFixed(3)+'%';
+ const tickStep=range>360?60:30;
+ const ticks=[];
+ for(let n=minStart;n<=maxEnd;n+=tickStep){
+  ticks.push('<span class="axisTick" style="left:'+pct(n)+'">'+chartTime(n)+'</span>');
+ }
+ if((maxEnd-minStart)%tickStep)ticks.push('<span class="axisTick" style="left:100%">'+chartTime(maxEnd)+'</span>');
+ const rows=data.map(({r,i})=>{
+  const bars=i.segments.map(s=>'<span class="journeyPart '+s.type+'" style="left:'+pct(s.start)+';width:'+((s.end-s.start)/range*100).toFixed(3)+'%" title="'+esc(s.label+': '+chartTime(s.start)+'–'+chartTime(s.end)+' ('+durationText(s.minutes)+')')+'"></span>').join('');
+  return '<button class="journeyLine" data-jump="'+esc(r.id)+'" aria-label="Pokaż podróż '+chartTime(i.start)+'–'+chartTime(i.end)+'"><span class="journeyLabel"><strong>'+chartTime(i.start)+'</strong><small>→ '+chartTime(i.end)+'</small></span><span class="journeyTrack">'+bars+'</span><span class="journeyDuration">'+durationText(i.total)+'<small>'+i.totals.wait+' min czekania</small></span></button>';
+ }).join('');
+ const legend=[['walk','Pieszo'],['bus','Autobus 12'],['train','Pociąg'],['wait','Czekanie / przesiadka']]
+ .map(([type,title])=>'<span><i class="journeyDot" style="background:var(--'+type+')"></i>'+title+'</span>').join('');
+ el.innerHTML='<div class="journeyChart"><div class="journeyGrid"><div class="journeyAxis"><span>Wyjście</span><div class="journeyTrack journeyAxisTrack">'+ticks.join('')+'</div><span style="text-align:right">Łącznie</span></div>'+rows+'</div></div><div class="journeyLegend">'+legend+'</div><p class="muted">Wspólna skala czasu dla wszystkich wariantów. Czasy szacunkowe, nie uwzględniają opóźnień na żywo.</p>';
+ el.onclick=e=>{const btn=e.target.closest('[data-jump]');if(!btn)return;const target=document.getElementById('route-'+btn.dataset.jump);target?.scrollIntoView({behavior:'smooth',block:'start'})};
+}
+$('timelineToggle').onclick=()=>{const hidden=$('timeline').hidden;$('timeline').hidden=!hidden;$('timelineToggle').textContent=hidden?'Ukryj':'Pokaż';$('timelineToggle').setAttribute('aria-pressed',String(hidden))};
 function card(r){
  const a=r.t,g=gaps(r),risk=(g.rail!==null&&g.rail<+$('rail').value)||(g.bus!==null&&g.bus<+$('bus').value),end=r.d==='M'?a[7]:a[6];
  const maxMzkBuffer=r.d==='M'&&a[1]&&a[3] ? min(a[3])-min(a[1])-14 : null;
  const mzkRisk=maxMzkBuffer!==null&&maxMzkBuffer<+$('bus').value;
  const tag=!end?'Niepełna trasa':(risk||mzkRisk)?'Sprawdź krótki margines':'Zgodne z progami';
  const steps=stages(r).map(s=>{const depart=s.type==='train'||s.type==='bus';return '<div class="step '+(depart?'depart':'')+'"><div class="hour">'+(depart?'<strong>'+esc(s.t)+'</strong><small>ODJAZD</small>':esc(s.t))+'</div><div><div class="place">'+(s.type==='train'?'🚆 ':s.type==='bus'?'🚌 ':'')+esc(s.label)+'</div>'+(depart?'<div class="detail">'+(s.type==='train'?'REG '+esc(s.num||'numer do sprawdzenia'):'Autobus 12')+'</div>':'')+(s.type==='train'?'<div class="platform '+(!s.plat?'unknown':'')+'">'+(s.plat?'Peron / tor: '+esc(s.plat):'Sprawdź peron i tor')+'</div>':'')+'</div></div>'}).join('');
- return '<article class="trip"><div class="headline"><span class="name">'+esc(r.d==='M'?'Starogard → PG':'PG → Starogard')+'</span><span class="badge '+(risk||mzkRisk||!end?'warn':'')+'">'+tag+'</span></div><div class="hero"><div><strong>'+esc(a[0])+'</strong><div class="muted">'+(r.d==='M'?'Wyjście z domu':'Wyjście z PG')+'</div></div><div>→</div><div><strong>'+esc(end||'—')+'</strong><div class="muted">'+(end?(r.d==='M'?'Na PG':'W domu'):'Cel nieustalony')+'</div></div></div>'+(end?'':'<div class="alert">Znamy tylko początek trasy. Nie zakładamy niepotwierdzonego połączenia.</div>')+'<div class="divider"></div>'+steps+'<div class="chips"><span>Tczew: '+(g.rail===null?'brak przesiadki / danych':g.rail+' min')+'</span><span>PKP–MZK: '+(g.bus===null?'brak danych':g.bus+' min')+'</span>'+(mzkRisk?'<span style="background:#fff0d9;color:#8c4e0d">Przy maks. 14 min MZK: '+maxMzkBuffer+' min na przesiadkę</span>':'')+'</div><div class="actions"><button data-edit="'+r.id+'">Edytuj godziny / perony</button><button data-copy="'+r.id+'">Kopiuj</button><button data-google="'+r.id+'">Google Calendar</button><button data-ics="'+r.id+'">ICS</button></div></article>';
+ return '<article id="route-'+esc(r.id)+'" class="trip"><div class="headline"><span class="name">'+esc(r.d==='M'?'Starogard → PG':'PG → Starogard')+'</span><span class="badge '+(risk||mzkRisk||!end?'warn':'')+'">'+tag+'</span></div><div class="hero"><div><strong>'+esc(a[0])+'</strong><div class="muted">'+(r.d==='M'?'Wyjście z domu':'Wyjście z PG')+'</div></div><div>→</div><div><strong>'+esc(end||'—')+'</strong><div class="muted">'+(end?(r.d==='M'?'Na PG':'W domu'):'Cel nieustalony')+'</div></div></div>'+journeySummary(r)+(end?'':'<div class="alert">Znamy tylko początek trasy. Nie zakładamy niepotwierdzonego połączenia.</div>')+'<div class="divider"></div>'+steps+'<div class="chips"><span>Tczew: '+(g.rail===null?'brak przesiadki / danych':g.rail+' min')+'</span><span>PKP–MZK: '+(g.bus===null?'brak danych':g.bus+' min')+'</span>'+(mzkRisk?'<span style="background:#fff0d9;color:#8c4e0d">Przy maks. 14 min MZK: '+maxMzkBuffer+' min na przesiadkę</span>':'')+'</div><div class="actions"><button data-edit="'+r.id+'">Edytuj godziny / perony</button><button data-copy="'+r.id+'">Kopiuj</button><button data-google="'+r.id+'">Google Calendar</button><button data-ics="'+r.id+'">ICS</button></div></article>';
 }
 function render(){
  const earliest=min($('from').value),latest=min($('to').value);
  let list=routes.filter(r=>r.d===mode).filter(r=>{const start=min(r.t[0]),end=min(r.d==='M'?r.t[7]:r.t[6]),g=gaps(r);if(start===null)return false;if(!all&&earliest!==null&&start<earliest)return false;if(!all&&latest!==null&&end!==null&&end>latest)return false;if(end===null)return false;if(!all&&!$('risky').checked&&((g.rail!==null&&g.rail<+$('rail').value)||(g.bus!==null&&g.bus<+$('bus').value)))return false;return true}).sort((x,y)=>min(x.t[0])-min(y.t[0]));
  $('count').textContent='Warianty: '+list.length+' / '+routes.filter(r=>r.d===mode).length;
+ renderTimeline(list);
  $('results').innerHTML=list.length?list.map(card).join(''):'<div class="panel"><b>Brak pełnych tras spełniających filtr.</b><p>Nie oznacza to braku innych pociągów. Zmień godzinę lub pokaż wszystkie pełne trasy.</p><button id="showall" class="primary">Pokaż wszystkie pełne</button></div>';
  if($('showall'))$('showall').onclick=()=>{all=true;render()};
 }
