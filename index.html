@@ -70,7 +70,7 @@ const raw=[
 const seed=raw.map((a,i)=>({id:a[0]==='M'&&a[1]==='08:32'&&a[4]==='08:58'?'morning-direct-85228':'trip'+i,d:a[0],t:a.slice(1)}));
 let routes=JSON.parse(JSON.stringify(seed)),mode='M',all=false,editing=null;
 window.autoRoutes=null;
-function activeRoutes(){return Array.isArray(window.autoRoutes)&&window.autoRoutes.length?window.autoRoutes:routes}
+function activeRoutes(){return Array.isArray(window.autoRoutes)?window.autoRoutes:routes}
 try{const v=JSON.parse(localStorage.getItem('dojazdy-pg-2026-v7'));if(Array.isArray(v)&&v.length)routes=v}catch(e){}
 const $=x=>document.getElementById(x),min=t=>t&&/^\d\d:\d\d$/.test(t)?+t.slice(0,2)*60 + +t.slice(3):null;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -196,9 +196,9 @@ function card(r){
 function render(){
  const earliest=min($('from').value),latest=min($('to').value);
  let list=activeRoutes().filter(r=>r.d===mode).filter(r=>{const start=min(r.t[0]),end=min(r.d==='M'?r.t[7]:r.t[6]),g=gaps(r);if(start===null)return false;if(!all&&earliest!==null&&start<earliest)return false;if(!all&&latest!==null&&end!==null&&end>latest)return false;if(end===null)return false;if(!all&&!$('risky').checked&&((g.rail!==null&&g.rail<+$('rail').value)||(g.bus!==null&&g.bus<+$('bus').value)))return false;return true}).sort((x,y)=>min(x.t[0])-min(y.t[0]));
- $('count').textContent='Warianty: '+list.length+' / '+activeRoutes().filter(r=>r.d===mode).length;
+ $('count').textContent=(Array.isArray(window.autoRoutes)?'Rozkład automatyczny PKP PLK':'Zapisane warianty offline')+' · '+list.length+' / '+activeRoutes().filter(r=>r.d===mode).length;
  renderTimeline(list);
- $('results').innerHTML=list.length?list.map(card).join(''):'<div class="panel"><b>Brak pełnych tras spełniających filtr.</b><p>Nie oznacza to braku innych pociągów. Zmień godzinę lub pokaż wszystkie pełne trasy.</p><button id="showall" class="primary">Pokaż wszystkie pełne</button></div>';
+ $('results').innerHTML=list.length?list.map(card).join(''):'<div class="panel"><b>Brak pełnych podróży dla wybranego zakresu.</b><p>Może brakować odpowiedniego autobusu MZK 12 albo pociągu do Wrzeszcza. Zmień godzinę lub pokaż wszystkie kompletne warianty.</p><button id="showall" class="primary">Pokaż wszystkie pełne</button></div>';
  if($('showall'))$('showall').onclick=()=>{all=true;render()};
 }
 function switchTo(d){mode=d;all=false;$('morning').classList.toggle('active',d==='M');$('return').classList.toggle('active',d==='R');$('from').value=d==='M'?'04:00':'13:00';$('to').value=d==='M'?'12:00':'23:59';render()}
