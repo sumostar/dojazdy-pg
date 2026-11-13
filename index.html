@@ -51,6 +51,7 @@ const raw=[
 ["M|05:35|05:40|05:52|05:58|06:20|06:25|06:55|07:20|50704|55867|I/10"],
 ["M|06:05|06:10|06:22|06:48|||||||"],
 ["M|06:52|06:57|07:09|07:18|07:40|07:48|08:18|08:43||50693|IV/5"],
+["M|08:32|08:37|08:51|08:58|||09:55|10:20|85228||I/2"],
 ["M|08:32|08:37|08:50|09:09|||||||"],
 ["M|11:31|11:36|11:50|12:03|||||||"],
 ["R|12:50|13:15|13:55|14:16|14:39|14:54|15:11|55332|50781||"],
@@ -66,9 +67,9 @@ const raw=[
 ["R|19:29|19:54|20:29|20:37|21:00||| |50791||"],
 ["R|20:36|21:01|21:40|21:45|22:07||| |50793||"]
 ].map(x=>x[0].split('|'));
-const seed=raw.map((a,i)=>({id:'trip'+i,d:a[0],t:a.slice(1)}));
+const seed=raw.map((a,i)=>({id:a[0]==='M'&&a[1]==='08:32'&&a[4]==='08:58'?'morning-direct-85228':'trip'+i,d:a[0],t:a.slice(1)}));
 let routes=JSON.parse(JSON.stringify(seed)),mode='M',all=false,editing=null;
-try{const v=JSON.parse(localStorage.getItem('dojazdy-pg-2026-v6'));if(Array.isArray(v)&&v.length)routes=v}catch(e){}
+try{const v=JSON.parse(localStorage.getItem('dojazdy-pg-2026-v7'));if(Array.isArray(v)&&v.length)routes=v}catch(e){}
 const $=x=>document.getElementById(x),min=t=>t&&/^\d\d:\d\d$/.test(t)?+t.slice(0,2)*60 + +t.slice(3):null;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function save(){try{localStorage.setItem('dojazdy-pg-2026-v6',JSON.stringify(routes))}catch(e){}}
@@ -76,7 +77,7 @@ function stages(r){
  const a=r.t,s=[];const add=(t,type,label,num,plat)=>{if(t&&t.trim())s.push({t,type,label,num,plat})};
  if(r.d==='M'){
  add(a[0],'walk','Wyjście z domu');add(a[1],'bus','Lubichowska–Andersa','12');
- add(a[2],'arrival','Starogard PKP – przyjazd');add(a[3],'train','Starogard Gdański',a[8]);
+ add(a[2],'arrival','Starogard PKP – przyjazd (szac.)');add(a[3],'train','Starogard Gdański',a[8],(!a[4]&&!a[5])?a[10]:null);
  add(a[4],'arrival','Tczew – przyjazd');add(a[5],'train','Tczew',a[9],a[10]);
  add(a[6],'arrival','Gdańsk Wrzeszcz – przyjazd');add(a[7],'finish','Politechnika Gdańska');
  }else{
@@ -105,9 +106,13 @@ function journeySegments(r){
   add(a[0],a[1],'walk','Pieszo na MZK');
   add(a[1],a[2],'bus','MZK 12: Andersa → PKP');
   add(a[2],a[3],'wait','Oczekiwanie na pociąg w Starogardzie');
-  add(a[3],a[4],'train','Pociąg Starogard → Tczew');
-  add(a[4],a[5],'wait','Przesiadka w Tczewie');
-  add(a[5],a[6],'train','Pociąg Tczew → Wrzeszcz');
+  if(!a[4]&&!a[5]&&a[6]){
+   add(a[3],a[6],'train','Bezpośredni pociąg Starogard → Gdańsk Wrzeszcz');
+  }else{
+   add(a[3],a[4],'train','Pociąg Starogard → Tczew');
+   add(a[4],a[5],'wait','Przesiadka w Tczewie');
+   add(a[5],a[6],'train','Pociąg Tczew → Wrzeszcz');
+  }
   add(a[6],a[7],'walk','Pieszo na PG');
  }else{
   add(a[0],a[1],'walk','Pieszo PG → Wrzeszcz');
@@ -181,7 +186,8 @@ function card(r){
  const a=r.t,g=gaps(r),risk=(g.rail!==null&&g.rail<+$('rail').value)||(g.bus!==null&&g.bus<+$('bus').value),end=r.d==='M'?a[7]:a[6];
  const maxMzkBuffer=r.d==='M'&&a[1]&&a[3] ? min(a[3])-min(a[1])-14 : null;
  const mzkRisk=maxMzkBuffer!==null&&maxMzkBuffer<+$('bus').value;
- const tag=!end?'Niepełna trasa':(risk||mzkRisk)?'Sprawdź krótki margines':'Zgodne z progami';
+ const direct=(r.d==='M'&&!a[4]&&!a[5]&&a[6])||(r.d==='R'&&!a[2]&&!a[3]&&a[4]);
+ const tag=!end?'Niepełna trasa':(risk||mzkRisk)?'Sprawdź krótki margines':direct?'Bez przesiadki kolejowej':'Zgodne z progami';
  const steps=stages(r).map(s=>{const depart=s.type==='train'||s.type==='bus';return '<div class="step '+(depart?'depart':'')+'"><div class="hour">'+(depart?'<strong>'+esc(s.t)+'</strong><small>ODJAZD</small>':esc(s.t))+'</div><div><div class="place">'+(s.type==='train'?'🚆 ':s.type==='bus'?'🚌 ':'')+esc(s.label)+'</div>'+(depart?'<div class="detail">'+(s.type==='train'?'REG '+esc(s.num||'numer do sprawdzenia'):'Autobus 12')+'</div>':'')+(s.type==='train'?'<div class="platform '+(!s.plat?'unknown':'')+'">'+(s.plat?'Peron / tor: '+esc(s.plat):'Sprawdź peron i tor')+'</div>':'')+'</div></div>'}).join('');
  return '<article id="route-'+esc(r.id)+'" class="trip"><div class="headline"><span class="name">'+esc(r.d==='M'?'Starogard → PG':'PG → Starogard')+'</span><span class="badge '+(risk||mzkRisk||!end?'warn':'')+'">'+tag+'</span></div><div class="hero"><div><strong>'+esc(a[0])+'</strong><div class="muted">'+(r.d==='M'?'Wyjście z domu':'Wyjście z PG')+'</div></div><div>→</div><div><strong>'+esc(end||'—')+'</strong><div class="muted">'+(end?(r.d==='M'?'Na PG':'W domu'):'Cel nieustalony')+'</div></div></div>'+journeySummary(r)+(end?'':'<div class="alert">Znamy tylko początek trasy. Nie zakładamy niepotwierdzonego połączenia.</div>')+'<div class="divider"></div>'+steps+'<div class="chips"><span>Tczew: '+(g.rail===null?'brak przesiadki / danych':g.rail+' min')+'</span><span>PKP–MZK: '+(g.bus===null?'brak danych':g.bus+' min')+'</span>'+(mzkRisk?'<span style="background:#fff0d9;color:#8c4e0d">Przy maks. 14 min MZK: '+maxMzkBuffer+' min na przesiadkę</span>':'')+'</div><div class="actions"><button data-edit="'+r.id+'">Edytuj godziny / perony</button><button data-copy="'+r.id+'">Kopiuj</button><button data-google="'+r.id+'">Google Calendar</button><button data-ics="'+r.id+'">ICS</button></div></article>';
 }
