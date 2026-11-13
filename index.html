@@ -146,7 +146,16 @@ function buildLiveBoard(schedule,operations,id,date){
   const old=dedup.get(key);
   if(!old){dedup.set(key,x);continue}
   if(old.confirmed&&!x.confirmed)continue;
-  dedup.set(key,{...old,actual:x.actual||old.actual,delay:x.delay??old.delay,confirmed:old.confirmed||x.confirmed,nr:old.nr||x.nr,p:old.p||x.p});
+  // Contradictory confirmations are possible for technical route records.
+  // Do not let an arbitrary last record erase a reported delay.
+  const chooseX=(!old.confirmed&&x.confirmed) ||
+    (old.confirmed===x.confirmed &&
+     x.delay!=null&&(old.delay==null||x.delay>old.delay));
+  const chosen=chooseX?x:old;
+  const diffs=[...(old.reportedDelays||[old.delay]),x.delay].filter(v=>v!=null);
+  dedup.set(key,{...old,actual:chosen.actual||old.actual,delay:chosen.delay??old.delay,
+   reportedDelays:[...new Set(diffs)],confirmed:old.confirmed||x.confirmed,
+   nr:old.nr||x.nr,p:old.p||x.p});
  }
  // If number is unknown in the API, do not count technical duplicate records
  // of the same clock-time as separate trains.
