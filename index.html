@@ -112,17 +112,36 @@ function buildLiveBoard(payload,id){
    const plannedM=min(planned),actualM=actual?min(actual):null;
    const delay=Number.isFinite(Number(stop.departureDelayMinutes))&&stop.departureDelayMinutes!==undefined?Number(stop.departureDelayMinutes):null;
    const nr=train.trainNumber||train.publicTrainNumber||train.number||null;
+   const trainId=train.trainId??train.trainID??train.id??null;
+   const orderId=train.orderId??null;
    const platform=stop.platform||stop.platformNumber||null,track=stop.track||stop.trackNumber||null;
-   stops.push({planned,actual,delay,nr,platform,track,confirmed:stop.isConfirmed===true,status:train.trainStatus||''});
+   // Operation records can contain multiple snapshots of the same scheduled stop.
+   // Use a stable train ID and scheduled datetime; never deduplicate by clock time alone,
+   // because different trains can legitimately depart in the same minute.
+   const plannedDateTime=stop.plannedDeparture||stop.plannedDepartureTime||planned;
+   stops.push({planned,plannedDateTime,actual,delay,nr,trainId,orderId,platform,track,confirmed:stop.isConfirmed===true,status:train.trainStatus||''});
   }
  }
- stops.sort((a,b)=>min(a.planned)-min(b.planned));
+ const unique=new Map();
+ for(const s of stops){
+  const identity=s.trainId??s.nr??s.orderId;
+  const key=identity!==null
+   ? String(identity)+'|'+s.plannedDateTime
+   : [s.plannedDateTime,s.platform||'',s.track||'',s.actual||''].join('|');
+  const previous=unique.get(key);
+  if(!previous || ((!previous.confirmed&&s.confirmed) ||
+      (previous.confirmed===s.confirmed &&
+        [s.actual,s.delay,s.platform,s.track].filter(v=>v!==null&&v!==undefined).length >
+        [previous.actual,previous.delay,previous.platform,previous.track].filter(v=>v!==null&&v!==undefined).length))) unique.set(key,s);
+ }
+ const cleanStops=Array.from(unique.values());
+ cleanStops.sort((a,b)=>min(a.planned)-min(b.planned));
  const date=$('travelDate').value,localToday=new Date().toLocaleDateString('sv-SE');
  const today=date===localToday;
  const now=new Date(),nowMin=now.getHours()*60+now.getMinutes();
- const visible=stops.filter(s=>!today||min(s.planned)>=nowMin-90).slice(0,35);
- if(!stops.length)return '<div class="alert">API nie zwróciło planowanych odjazdów tej stacji w tej odpowiedzi. Nie oznacza to, że pociągi nie kursują.</div>';
- return '<p class="muted">Dane operacyjne PKP PLK: '+esc(stationNames[id])+'. Wyświetlamy '+visible.length+' z '+stops.length+' odjazdów odnalezionych w odpowiedzi. '+(today?'Godziny od 90 minut przed aktualną godziną.':'Uwaga: dane operacyjne są bieżące, nie dla wybranej daty przyszłej.')+'</p>'+
+ const visible=cleanStops.filter(s=>!today||min(s.planned)>=nowMin-90).slice(0,35);
+ if(!cleanStops.length)return '<div class="alert">API nie zwróciło planowanych odjazdów tej stacji w tej odpowiedzi. Nie oznacza to, że pociągi nie kursują.</div>';
+ return '<p class="muted">Dane operacyjne PKP PLK: '+esc(stationNames[id])+'. Wyświetlamy '+visible.length+' z '+cleanStops.length+' unikalnych odjazdów odnalezionych w odpowiedzi. '+(today?'Godziny od 90 minut przed aktualną godziną.':'Uwaga: dane operacyjne są bieżące, nie dla wybranej daty przyszłej.')+'</p>'+
  visible.map(s=>'<div class="liveRow"><div><strong>'+esc(s.planned)+'</strong><div class="muted">plan</div></div><div>'+
  '<b>'+esc(s.nr?'Pociąg '+s.nr:'Odjazd ze stacji')+'</b>'+
  '<div class="liveSub">Rzeczywisty / zgłoszony: <b>'+esc(s.actual||'brak danych')+'</b></div>'+
